@@ -10,17 +10,28 @@
       href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <meta name="description" content="" />
     <link rel="stylesheet" href="./assets/style.css" />
   </head>
+
   <body>
-    <header>
+    <div class="edition">
+      <i class="fa-solid fa-pen-to-square"></i>Mode édition
+    </div>
+    <header class="header">
       <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
       <nav>
         <ul>
           <li>projets</li>
           <li>contact</li>
-          <li><a href="/login.html">login</a></li>
+          <li id="logoutButton"><a href="/index.html">logout</a></li>
           <li><img src="./assets/icons/instagram.png" alt="Instagram" /></li>
         </ul>
       </nav>
@@ -50,7 +61,32 @@
         </article>
       </section>
       <section id="portfolio">
-        <h2 class="buttonImage">Mes Projets</h2>
+        <div class="modify-bloc">
+          <h2 class="buttonImage">Mes Projets</h2>
+          <div class="modify">
+            <i class="fa-solid fa-pen-to-square"></i>Modifier
+          </div>
+          <aside id="modal1" class="modal" aria-hidden="true" role="dialog">
+            <div class="modal-wrapper">
+              <h1 class="titlemodal">Condition d'utilisation</h1>
+              Je vous présente aujourd’hui mancreations.be ; un site web
+              personnalisé pour mon frère aîné. Petit défi à la clé : il s’agit
+              d’un one-page (une seule page) que j’ai tenté de réaliser en 24
+              heures de temps. Je repasse ici en revue les étapes et ma manière
+              de travailler en vue de m’améliorer ou de vous proposer une
+              méthode de travail que vous n’utiliseriez pas. Chaque titre
+              correspond à une étape du projet. Je lance dès à présent le top
+              chrono ! Avant de commencer Avant de commencer un projet web, on
+              s’accorde normalement sur le budget, les délais et les closes du
+              contrat (droit d’auteur, remboursement en cas de non-paiement
+              etc…) Il est évident qu’ici il n’en sera pas question. Il s’agit
+              d’un projet perso gratuit et non-contractuel. Est-ce pour autant
+              de foncer tête baissée ? Non. J’ai trois conseils à vous donner
+              avant de commencer ; 1. On ne code pas, 2. On ne code pas. 3. On
+              fait un dessin 😀 – on notes quelques idées, on réfléchi. Dans ce
+            </div>
+          </aside>
+        </div>
 
         <div class="gallery">
           <figure class="photo"></figure>
