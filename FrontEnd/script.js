@@ -178,4 +178,132 @@ fetch("http://localhost:5678/api/works")
         window.location.href = "/index.html";
       });
     }
+    let modal = null;
+
+    const openModal = function (e) {
+      e.preventDefault();
+      const target = document.querySelector(e.target.getAttribute("href"));
+      const overlay = document.getElementById("modal-overlay");
+      if (target) {
+        target.style.display = "block"; // Assurez-vous que la modal est visible
+        overlay.style.display = "block"; // Affichez l'overlay
+        target.removeAttribute("aria-hidden");
+        target.setAttribute("aria-modal", "true");
+        modal = target;
+        modal.addEventListener("click", closeModal);
+        const stopElement = modal.querySelector(".js-modal-stop");
+        if (stopElement) {
+          stopElement.addEventListener("click", stopPropagation);
+        } else {
+          console.error(
+            "L'élément avec la classe 'js-modal-stop' n'a pas été trouvé."
+          );
+        }
+        const closeButton = modal.querySelector(".js-modal-close");
+        if (closeButton) {
+          closeButton.style.display = "block"; // Assurez-vous que le bouton est visible
+          closeButton.addEventListener("click", closeModal);
+        }
+        const addPhotoButton = modal.querySelector(".add-Photo");
+        if (addPhotoButton) {
+          addPhotoButton.style.display = "block"; // Assurez-vous que le bouton est visible
+        }
+      } else {
+        console.error("La cible de la modal n'a pas été trouvée.");
+      }
+    };
+
+    const closeModal = function (e) {
+      if (modal === null) return;
+      e.preventDefault();
+      modal.style.display = "none";
+      const overlay = document.getElementById("modal-overlay");
+      overlay.style.display = "none"; // Masquez l'overlay
+      modal.setAttribute("aria-hidden", "true");
+      modal.removeAttribute("aria-modal");
+      modal.removeEventListener("click", closeModal);
+      const stopElement = modal.querySelector(".js-modal-stop");
+      if (stopElement) {
+        stopElement.removeEventListener("click", stopPropagation);
+      }
+      const closeButton = modal.querySelector(".js-modal-close");
+      if (closeButton) {
+        closeButton.removeEventListener("click", closeModal);
+      }
+
+      modal = null;
+    };
+
+    const stopPropagation = function (e) {
+      console.log("stopPropagation called"); // Log pour vérifier que la fonction est appelée
+      e.stopPropagation();
+    };
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" || e.key === "Esc") {
+        closeModal(e);
+      }
+    });
+
+    document.querySelectorAll(".js-modal").forEach((a) => {
+      a.addEventListener("click", openModal);
+    }); // Fonction pour afficher les images dans les deux conteneurs
+    const showImages = function (data) {
+      const mainGallery = document.querySelector(".main-gallery");
+      const modalGallery = document.querySelector(".modal-gallery");
+
+      // Vider les conteneurs avant d'ajouter les nouveaux éléments
+      mainGallery.innerHTML = "";
+      modalGallery.innerHTML = "";
+
+      data.forEach((item) => {
+        const figure = document.createElement("figure");
+        figure.classList.add("photo");
+
+        const title = document.createElement("h3");
+        title.textContent = item.title;
+
+        const img = document.createElement("img");
+        img.src = item.imageUrl;
+        img.alt = item.name;
+
+        const figcaption = document.createElement("figcaption");
+        figcaption.textContent = item.name;
+
+        // Ajouter l'image, le titre et la légende au conteneur principal
+        figure.appendChild(img);
+        figure.appendChild(figcaption);
+        figure.appendChild(title);
+        mainGallery.appendChild(figure);
+
+        // Créer la figure pour la modal
+        const modalFigure = document.createElement("figure");
+        modalFigure.classList.add("photo");
+
+        const modalImg = document.createElement("img");
+        modalImg.src = item.imageUrl;
+        modalImg.alt = item.name;
+
+        // Ajouter l'icône de suppression
+        const deleteIcon = document.createElement("i");
+        deleteIcon.classList.add("fa", "fa-trash-can", "delete-icon");
+        deleteIcon.addEventListener("click", () => {
+          modalFigure.remove();
+        });
+
+        // Ajouter uniquement l'image au conteneur de la modal
+        modalFigure.appendChild(modalImg);
+        modalFigure.appendChild(deleteIcon);
+        modalGallery.appendChild(modalFigure);
+      });
+    };
+
+    // Requête à l'API pour récupérer les données des images
+    fetch("http://localhost:5678/api/works")
+      .then((response) => response.json())
+      .then((data) => {
+        showImages(data);
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la récupération des images:", error);
+      });
   });
