@@ -213,10 +213,20 @@ fetch("http://localhost:5678/api/works")
 
     document.querySelectorAll(".js-modal").forEach((a) => {
       a.addEventListener("click", openModal);
-    }); // Fonction pour afficher les images dans les deux conteneurs
+    });
+
+    // Fonction pour afficher les images dans les deux conteneurs
     const showImages = function (data) {
       const mainGallery = document.querySelector(".main-gallery");
       const modalGallery = document.querySelector(".modal-gallery");
+
+      // Vérifiez que les éléments existent
+      if (!mainGallery || !modalGallery) {
+        console.error(
+          "Les éléments 'mainGallery' ou 'modalGallery' n'ont pas été trouvés."
+        );
+        return;
+      }
 
       // Vider les conteneurs avant d'ajouter les nouveaux éléments
       mainGallery.innerHTML = "";
@@ -239,7 +249,6 @@ fetch("http://localhost:5678/api/works")
         figure.appendChild(img);
         figure.appendChild(figcaption);
         figure.appendChild(title);
-        mainGallery.appendChild(figure);
 
         // Ajouter uniquement l'image au conteneur de la modal
         const modalFigure = document.createElement("figure");

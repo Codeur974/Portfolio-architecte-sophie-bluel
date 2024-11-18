@@ -290,18 +290,20 @@ a.js-modal {
   width: 465px;
   height: 400px;
 }
-#titleMopdal {
+h2#titlemodal {
+  display: flex;
   font-weight: 700;
   font-size: 24px;
-
-  margin-top: 80px;
+  justify-content: center;
+  margin-top: 25px;
 }
-.gallery.modal-gallery {
+.main-gallery.modal-gallery {
   display: flex;
+  margin-top: 50px;
   justify-content: space-between;
   flex-wrap: wrap;
   border-bottom: 1px solid #b3b3b3;
-  padding: 0 20px 120px;
+  padding: 0 20px 100px;
   gap: 30px 5px;
 
   box-sizing: border-box;
@@ -345,7 +347,7 @@ icon {
   padding: 0 20px;
   margin: auto;
 
-  margin-top: 180px;
+  margin-top: 30px;
   border-radius: 25px;
   color: #fff;
   background-color: #1d6154;
