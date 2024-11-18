@@ -47,7 +47,7 @@ document
           localStorage.setItem("userID", data.userId);
           localStorage.setItem("isLoggedIn", "true");
 
-          window.location.href = "/mode-edit.html"; // Rediriger l'utilisateur vers la page d'accueil
+          window.location.href = "/index.html"; // Rediriger l'utilisateur vers la page d'accueil
         } else {
           // Afficher un message d'erreur
           const errorMessage = document.getElementById("error-message");

@@ -1,5 +1,6 @@
 fetch("http://localhost:5678/api/works")
   .then((response) => response.json())
+
   .then((data) => {
     console.log(data);
     //creation d'un boutton
@@ -10,15 +11,49 @@ fetch("http://localhost:5678/api/works")
     // Ajouter la div au DOM, par exemple, avant la galerie
     const galleryContainer = document.querySelector(".gallery");
     galleryContainer.parentNode.insertBefore(buttonContainer, galleryContainer);
+    const filtreByCategory = (categoryName) => {
+      const filteredData = data.filter(
+        (item) => item.category.name === categoryName
+      );
+      const photoContainer = document.querySelector(".gallery");
+      photoContainer.innerHTML = "";
 
-    function filtreButton(text, className, onClickHandler) {
-      const button = document.createElement("button");
-      console.log(button);
+      filteredData.forEach((item) => {
+        const figure = document.createElement("figure");
+        figure.classList.add("photo");
 
-      button.textContent = text;
-      button.classList.add(className);
-      button.addEventListener("click", onClickHandler);
-      buttonContainer.appendChild(button);
+        const title = document.createElement("h3");
+        title.textContent = item.title;
+
+        const img = document.createElement("img");
+        img.src = item.imageUrl;
+        img.alt = item.name;
+
+        const figcaption = document.createElement("figcaption");
+        figcaption.textContent = item.name;
+
+        figure.appendChild(img);
+        figure.appendChild(figcaption);
+        figure.appendChild(title);
+        photoContainer.appendChild(figure);
+      }); //
+    };
+    const allButton = document.createElement("button");
+    allButton.textContent = "Tous";
+    allButton.classList.add("category-button");
+    allButton.addEventListener("click", showAllButton);
+    buttonContainer.appendChild(allButton);
+
+    function filterButton() {
+      const categories = [...new Set(data.map((item) => item.category.name))];
+
+      categories.forEach((category) => {
+        const button = document.createElement("button");
+        button.textContent = category;
+        button.classList.add("category-button");
+        button.addEventListener("click", () => filtreByCategory(category));
+        buttonContainer.appendChild(button);
+      });
     }
     function showAllButton() {
       const photoContainer = document.querySelector(".gallery");
@@ -41,143 +76,10 @@ fetch("http://localhost:5678/api/works")
         figure.appendChild(title);
       });
     }
+    filterButton();
 
-    filtreButton("tous", "buttonElmt", showAllButton);
-    // Appeler la fonction createButton pour ajouter un bouton
-    filtreButton(
-      "Objets",
-      "buttonElmt",
-      () => {
-        console.log(data[0].category.name);
-        // Filtrer les éléments dont la catégorie est "Appartements"
-        const filteredData = data.filter(
-          (item) => item.category.name === "Objets"
-        );
-        // Afficher les éléments filtrés dans la console
-        console.log("Objets:", filteredData);
-
-        // Sélectionner le conteneur où les éléments filtrés seront affichés
-        const photoContainer = document.querySelector(".gallery");
-
-        // Vider le conteneur avant d'ajouter les nouveaux éléments
-        photoContainer.innerHTML = "";
-
-        // Ajouter les éléments filtrés au conteneur
-        filteredData.forEach((item) => {
-          const figure = document.createElement("figure");
-          figure.classList.add("photo");
-
-          const title = document.createElement("h3");
-          title.textContent = item.title;
-
-          const img = document.createElement("img");
-          img.src = item.imageUrl;
-          img.alt = item.name;
-
-          const figcaption = document.createElement("figcaption");
-          figcaption.textContent = item.name;
-
-          figure.appendChild(img);
-          figure.appendChild(figcaption);
-          figure.appendChild(title);
-          photoContainer.appendChild(figure);
-        });
-      }
-      // Ajouter le bouton au parent de l'élément
-    );
-    filtreButton("Appartements", "buttonElmt", () => {
-      console.log(data[0].category.name);
-      // Filtrer les éléments dont la catégorie est "Appartements"
-      const filteredData = data.filter(
-        (item) => item.category.name === "Appartements"
-      );
-      // Afficher les éléments filtrés dans la console
-      console.log("Appartements:", filteredData);
-
-      // Sélectionner le conteneur où les éléments filtrés seront affichés
-      const photoContainer = document.querySelector(".gallery");
-
-      // Vider le conteneur avant d'ajouter les nouveaux éléments
-      photoContainer.innerHTML = "";
-
-      // Ajouter les éléments filtrés au conteneur
-      filteredData.forEach((item) => {
-        const figure = document.createElement("figure");
-        figure.classList.add("photo");
-
-        const title = document.createElement("h3");
-        title.textContent = item.title;
-
-        const img = document.createElement("img");
-        img.src = item.imageUrl;
-        img.alt = item.name;
-
-        const figcaption = document.createElement("figcaption");
-        figcaption.textContent = item.name;
-
-        figure.appendChild(img);
-        figure.appendChild(figcaption);
-        figure.appendChild(title);
-        photoContainer.appendChild(figure);
-      });
-    });
-    filtreButton("Hôtels & Restaurants", "buttonElmt", () => {
-      console.log(data[0].category.name);
-      // Filtrer les éléments dont la catégorie est "Appartements"
-      const filteredData = data.filter(
-        (item) => item.category.name === "Hotels & restaurants"
-      );
-      // Afficher les éléments filtrés dans la console
-      console.log("Hôtels & Restaurant:", filteredData);
-
-      // Sélectionner le conteneur où les éléments filtrés seront affichés
-      const photoContainer = document.querySelector(".gallery");
-
-      // Vider le conteneur avant d'ajouter les nouveaux éléments
-      photoContainer.innerHTML = "";
-
-      // Ajouter les éléments filtrés au conteneur
-      filteredData.forEach((item) => {
-        const figure = document.createElement("figure");
-        figure.classList.add("photo");
-
-        const title = document.createElement("h3");
-        title.textContent = item.title;
-
-        const img = document.createElement("img");
-        img.src = item.imageUrl;
-        img.alt = item.name;
-
-        const figcaption = document.createElement("figcaption");
-        figcaption.textContent = item.name;
-
-        figure.appendChild(img);
-        figure.appendChild(figcaption);
-        figure.appendChild(title);
-        photoContainer.appendChild(figure);
-      });
-    });
     showAllButton();
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
 
-    if (isLoggedIn === "true") {
-      document.querySelectorAll("button").forEach((button) => {
-        button.style.display = "none";
-      });
-    }
-    const logoutButton = document.getElementById("logoutButton");
-
-    if (logoutButton) {
-      logoutButton.addEventListener("click", () => {
-        // Supprimer les informations de connexion du localStorage
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("isLoggedIn");
-
-        // Rediriger vers la page d'accueil
-        window.location.href = "/index.html";
-      });
-    }
     let modal = null;
 
     const openModal = function (e) {
@@ -244,6 +146,71 @@ fetch("http://localhost:5678/api/works")
       }
     });
 
+    //gestion page edit si l'utilisateur est connecté
+
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+    if (isLoggedIn === "true") {
+      document.querySelectorAll("button").forEach((button) => {
+        button.style.display = "none";
+
+        //creer un lien pour modifier
+        if (!document.querySelector(".js-modal")) {
+          // Créer le bouton "Modifier"
+          const modifyButton = document.createElement("a");
+          modifyButton.href = "#modal1";
+          modifyButton.classList.add("js-modal");
+          modifyButton.innerHTML =
+            '<i class="fa-solid fa-pen-to-square"></i>Modifier';
+
+          const portfolioSection = document.querySelector("#portfolio");
+          const title = portfolioSection.querySelector("h2.buttonImage");
+          if (title) {
+            // Créer une div englobante pour le titre et le bouton
+            const titleContainer = document.createElement("div");
+            titleContainer.classList.add("title-container");
+
+            // Ajouter le titre et le bouton à la div englobante
+            titleContainer.appendChild(title);
+            titleContainer.appendChild(modifyButton);
+
+            // Ajouter la div englobante à la section portfolio
+            portfolioSection.insertBefore(
+              titleContainer,
+              portfolioSection.firstChild
+            );
+          }
+          // Ajouter un écouteur d'événements pour ouvrir la modal
+          modifyButton.addEventListener("click", openModal);
+        }
+        const loginButton = document.getElementById("loginButton");
+        if (loginButton) {
+          loginButton.innerHTML = '<a href="/index.html">Logout</a>';
+          loginButton.id = "logoutButton"; // Changez l'ID pour éviter les conflits
+        }
+        if (!document.querySelector(".top-bar")) {
+          const topBar = document.createElement("div");
+          topBar.classList.add("top-bar");
+          topBar.innerHTML =
+            '<i class="fa-solid fa-pen-to-square"></i>Mode édition';
+          document.body.insertBefore(topBar, document.body.firstChild);
+        }
+      });
+    }
+    const logoutButton = document.getElementById("logoutButton");
+
+    if (logoutButton) {
+      logoutButton.addEventListener("click", () => {
+        // Supprimer les informations de connexion du localStorage
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("isLoggedIn");
+
+        // Rediriger vers la page d'accueil
+        window.location.href = "/index.html";
+      });
+    }
+
     document.querySelectorAll(".js-modal").forEach((a) => {
       a.addEventListener("click", openModal);
     }); // Fonction pour afficher les images dans les deux conteneurs
@@ -269,34 +236,25 @@ fetch("http://localhost:5678/api/works")
         const figcaption = document.createElement("figcaption");
         figcaption.textContent = item.name;
 
-        // Ajouter l'image, le titre et la légende au conteneur principal
         figure.appendChild(img);
         figure.appendChild(figcaption);
         figure.appendChild(title);
         mainGallery.appendChild(figure);
 
-        // Créer la figure pour la modal
+        // Ajouter uniquement l'image au conteneur de la modal
         const modalFigure = document.createElement("figure");
         modalFigure.classList.add("photo");
-
         const modalImg = document.createElement("img");
         modalImg.src = item.imageUrl;
         modalImg.alt = item.name;
-
-        // Ajouter l'icône de suppression
-        const deleteIcon = document.createElement("i");
-        deleteIcon.classList.add("fa", "fa-trash-can", "delete-icon");
-        deleteIcon.addEventListener("click", () => {
-          modalFigure.remove();
-        });
-
-        // Ajouter uniquement l'image au conteneur de la modal
         modalFigure.appendChild(modalImg);
-        modalFigure.appendChild(deleteIcon);
         modalGallery.appendChild(modalFigure);
+
+        // Logs pour déboguer
+        console.log("Image ajoutée à la galerie principale :", img.src);
+        console.log("Image ajoutée à la modale :", modalImg.src);
       });
     };
-
     // Requête à l'API pour récupérer les données des images
     fetch("http://localhost:5678/api/works")
       .then((response) => response.json())

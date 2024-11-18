@@ -7,8 +7,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap"
       rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css"
     />
     <meta name="description" content="" />
     <link rel="stylesheet" href="./assets/style.css" />
@@ -20,7 +27,7 @@
         <ul>
           <li>projets</li>
           <li>contact</li>
-          <li><a href="/login.html">login</a></li>
+          <li id="loginButton"><a href="/login.html">login</a></li>
           <li><img src="./assets/icons/instagram.png" alt="Instagram" /></li>
         </ul>
       </nav>
@@ -69,6 +76,26 @@
           <input type="submit" value="Envoyer" />
         </form>
       </section>
+      <div id="modal-overlay" class="modal-overlay" style="display: none"></div>
+      <aside
+        id="modal1"
+        class="modal"
+        aria-hidden="true"
+        role="dialog"
+        aria-labelledby="titlemodal"
+        style="display: none"
+      >
+        <div class="modal-wrapper js-modal-stop">
+          <button class="js-modal-close">
+            <i class="fa-sharp fa-solid fa-xmark"></i>
+          </button>
+          <h2 id="titlemodal">Galerie photo</h2>
+          <div class="gallery modal-gallery">
+            <figure class="photo"></figure>
+          </div>
+          <button class="add-Photo">Ajouter une photo</button>
+        </div>
+      </aside>
     </main>
 
     <footer>

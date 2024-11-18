@@ -144,7 +144,7 @@ header {
   margin: 80px 0;
 }
 
-.edition {
+.top-bar {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -157,7 +157,7 @@ header {
   background-color: black;
   color: white;
 }
-.edition i {
+.top-bar i {
   margin-right: 10px;
 }
 
@@ -247,6 +247,20 @@ li:hover {
 #portfolio h2 {
   text-align: center;
   margin-bottom: 1em;
+  display: inline-block;
+}
+#portfolio .title-container {
+  display: flex;
+  gap: 30px;
+  align-items: start;
+  justify-content: start;
+}
+a.js-modal {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+  font-size: 16px;
+  text-decoration: none;
 }
 .modal {
   display: flex;
@@ -314,7 +328,7 @@ li:hover {
   padding: 0; /* Supprime les espacements */
 }
 /* Style pour l'icône de suppression */
-.modal-gallery .photo .delete-icon {
+icon {
   position: absolute;
   color: #fff;
   top: 5px;
@@ -343,9 +357,9 @@ li:hover {
   display: flex;
   justify-content: center;
   margin-bottom: 30px;
-  width: 585px;
+  width: 590px;
 }
-.buttonElmt {
+.category-button {
   position: relative;
   top: 50%;
   height: 37px;

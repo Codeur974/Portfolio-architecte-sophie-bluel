@@ -1,36 +1,27 @@
-document
-  .getElementById("loginForm")
-  .addEventListener("submit", function (event) {
-    event.preventDefault();
+document;
+function createCategoryButtons() {
+  const categories = [...new Set(data.map((item) => item.category.name))]; // Récupérer les catégories uniques
+  const buttonContainer = document.querySelector(".button-container"); // Assurez-vous d'avoir un conteneur pour les boutons
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    // Envoyer les informations de connexion au serveur
-    fetch("http://localhost:5678/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          // Connexion réussie
-          alert("Connexion réussie");
-          // Rediriger vers une autre page après la connexion réussie
-          window.location.href = "index.html";
-        } else {
-          // Afficher un message d'erreur
-          const errorMessage = document.getElementById("error-message");
-          errorMessage.textContent = "E-mail ou mot de passe incorrect";
-        }
-      })
-      .catch((error) => {
-        console.error("Erreur:", error);
-        const errorMessage = document.getElementById("error-message");
-        errorMessage.textContent =
-          "Une erreur est survenue. Veuillez réessayer plus tard.";
-      });
+  // Créer un bouton pour chaque catégorie
+  categories.forEach((category) => {
+    const button = document.createElement("button");
+    button.textContent = category;
+    button.classList.add("category-button");
+    button.addEventListener("click", () => filtreByCategory(category));
+    buttonContainer.appendChild(button);
   });
+
+  // Créer un bouton pour afficher toutes les photos
+  const allButton = document.createElement("button");
+  allButton.textContent = "Tous";
+  allButton.classList.add("category-button");
+  allButton.addEventListener("click", showAllButton);
+  buttonContainer.appendChild(allButton);
+}
+
+// Appeler la fonction pour créer les boutons de catégorie
+createCategoryButtons();
+
+// Afficher toutes les photos par défaut
+showAllButton();
