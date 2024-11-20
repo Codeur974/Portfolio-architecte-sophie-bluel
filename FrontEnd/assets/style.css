@@ -330,7 +330,7 @@ h2#titlemodal {
   padding: 0; /* Supprime les espacements */
 }
 /* Style pour l'icône de suppression */
-icon {
+.delete-icon {
   position: absolute;
   color: #fff;
   top: 5px;
@@ -339,6 +339,7 @@ icon {
   border-radius: 15%;
   padding: 5px;
   cursor: pointer;
+  font-size: 10px;
   z-index: 1002; /* Assurez-vous que l'icône est au-dessus de l'image */
 }
 .add-Photo {
@@ -355,6 +356,11 @@ icon {
   font-weight: bold;
   cursor: pointer;
 }
+.add-slide {
+  display: flex;
+  flex-direction: column;
+}
+
 .Elmt {
   display: flex;
   justify-content: center;

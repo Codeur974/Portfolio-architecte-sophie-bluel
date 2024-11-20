@@ -96,6 +96,60 @@
           <button class="add-Photo">Ajouter une photo</button>
         </div>
       </aside>
+      <!-- Nouvelle modal pour ajouter une photo -->
+      <!-- Nouvelle modal pour ajouter une photo -->
+      <aside
+        id="modal2"
+        class="modal"
+        aria-hidden="true"
+        role="dialog"
+        aria-labelledby="titlemodal2"
+        style="display: none"
+      >
+        <div class="modal-wrapper js-modal-stop">
+          <button class="js-modal-close">
+            <i class="fa-sharp fa-solid fa-xmark"></i>
+          </button>
+          <h2 id="titlemodal2">Ajouter une photo</h2>
+          <form
+            action="http://localhost:5678/api/works"
+            method="post"
+            enctype="multipart/form-data"
+            id="addPhotoForm"
+          >
+            <button type="submit">Upload</button>
+            <label for="photoFile">Upload an image:</label>
+            <input
+              type="file"
+              name="image"
+              id="photoFile"
+              accept=".jpg,.jpeg,.png,.webp"
+              required
+              autocomplete="off"
+            />
+            <img
+              id="photoPreview"
+              src=""
+              alt="Aperçu de la photo"
+              style="display: none; max-width: 100%; margin-top: 10px"
+            />
+            <input
+              type="text"
+              name="title"
+              placeholder="Title"
+              required
+              autocomplete="off"
+            />
+            <input
+              type="text"
+              name="category"
+              placeholder="Category"
+              required
+              autocomplete="off"
+            />
+          </form>
+        </div>
+      </aside>
     </main>
 
     <footer>
