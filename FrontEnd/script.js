@@ -84,7 +84,9 @@ fetch("http://localhost:5678/api/works")
 
     const openModal = function (e) {
       e.preventDefault();
-      const target = document.querySelector(e.target.getAttribute("href"));
+      const target = e.target.getAttribute("href")
+        ? document.querySelector(e.target.getAttribute("href"))
+        : e.target;
       const overlay = document.getElementById("modal-overlay");
       if (target) {
         target.style.display = "block"; // Assurez-vous que la modal est visible
@@ -365,6 +367,11 @@ fetch("http://localhost:5678/api/works")
           }
         });
       }
+      // Masquer les filtres si l'utilisateur est connecté
+      const filters = document.querySelector(".Elmt");
+      if (filters) {
+        filters.style.display = "none";
+      }
     }
 
     const logoutButton = document.getElementById("logoutButton");
@@ -435,10 +442,6 @@ fetch("http://localhost:5678/api/works")
         modalFigure.appendChild(deleteIcon);
 
         modalGallery.appendChild(modalFigure);
-
-        // Logs pour déboguer
-        console.log("Image ajoutée à la galerie principale :", img.src);
-        console.log("Image ajoutée à la modale :", modalImg.src);
       });
     };
 
