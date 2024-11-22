@@ -117,36 +117,52 @@
             enctype="multipart/form-data"
             id="addPhotoForm"
           >
-            <button type="submit">Upload</button>
-            <label for="photoFile">Upload an image:</label>
-            <input
-              type="file"
-              name="image"
-              id="photoFile"
-              accept=".jpg,.jpeg,.png,.webp"
-              required
-              autocomplete="off"
-            />
-            <img
-              id="photoPreview"
-              src=""
-              alt="Aperçu de la photo"
-              style="display: none; max-width: 100%; margin-top: 10px"
-            />
-            <input
-              type="text"
-              name="title"
-              placeholder="Title"
-              required
-              autocomplete="off"
-            />
-            <input
-              type="text"
-              name="category"
-              placeholder="Category"
-              required
-              autocomplete="off"
-            />
+           
+
+            <div class="input-container">
+              <input
+                class="input-file"
+               type="file"
+                name="image"
+                id="photoFile"
+                accept=".jpg,.jpeg,.png,.webp"
+                required
+                autocomplete="off"
+              />
+               <i class="fa-regular fa-image icon"></i>
+              <label for="photoFile" class="custom-file-upload" >
+               </i><span class="button-photo">+ Ajouter photo</span>
+              </label>
+            </div>
+             
+            </div>
+            <img id="photoPreview" src="" alt="Aperçu de la photo" />
+            <div class="form-group">
+              <label  for="title">Titre</label>
+              <input
+                class="input-title"
+                type="text"
+                name="title"
+                id="title"
+                placeholder="Titre"
+                required
+                autocomplete="off"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label class="label-category" for="category">Catégorie</label>
+              <input
+                class="input-category"
+                type="text"
+                name="category"
+                id="category"
+                placeholder="Catégorie"
+                required
+                autocomplete="off"
+              />
+            </div>
+            <button class="valid-Form" type="submit">Valider</button>
           </form>
         </div>
       </aside>
