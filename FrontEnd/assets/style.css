@@ -268,7 +268,8 @@ a.js-modal {
   justify-content: center;
   position: fixed;
   width: 630px;
-  height: 720px;
+  height: auto;
+
   top: 20%;
   left: 33%;
   border-radius: 15px;
@@ -285,16 +286,25 @@ a.js-modal {
 }
 .modal-wrapper {
   background-color: #fff;
-
   padding: 10px;
   width: 465px;
+  margin: auto;
 }
+
 h2#titlemodal {
   display: flex;
   font-weight: 700;
   font-size: 24px;
   justify-content: center;
-  margin-top: 25px;
+  margin-top: 10px;
+}
+h2#titlemodal2 {
+  margin-left: 5%;
+  display: flex;
+  font-weight: 700;
+  font-size: 24px;
+  justify-content: center;
+  margin-top: 50px;
 }
 .main-gallery.modal-gallery {
   display: flex;
@@ -302,19 +312,26 @@ h2#titlemodal {
   justify-content: space-between;
   flex-wrap: wrap;
   border-bottom: 1px solid #b3b3b3;
-  padding: 0 20px 100px;
+  padding: 0 20px 50px;
   gap: 30px 5px;
 
   box-sizing: border-box;
 }
+.close-button,
 .js-modal-close {
   position: absolute;
-  top: 25px;
   right: 25px;
+  top: 25px;
+  margin: auto;
   border: none;
   background-color: #fff;
   font-size: 24px;
 }
+.fa-arrow-left {
+  position: absolute;
+  right: 35rem;
+}
+
 .modal-wrapper.js-modal-stop {
   margin: auto;
   margin-top: 40px;
@@ -348,6 +365,7 @@ h2#titlemodal {
   width: 237px;
   padding: 0 20px;
   margin: auto;
+  margin-bottom: 30px;
 
   margin-top: 30px;
   border-radius: 25px;
@@ -363,6 +381,7 @@ h2#titlemodal {
 #addPhotoForm {
   display: flex;
   flex-direction: column;
+  margin-left: 5%;
 }
 .input-category,
 .input-title {
@@ -370,21 +389,26 @@ h2#titlemodal {
   height: 51px;
   box-shadow: 0 10px 16px rgba(54, 53, 53, 0.123);
   border: none;
-  margin-left: 16.5%;
 }
 .label-category {
   margin-top: 20px;
 }
-
+.form-group-category,
 .form-group {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
-
+.form-group-category label,
 .form-group label {
   margin-bottom: 5px;
-  margin-left: 16.5%;
+}
+.input-group {
+  margin: auto;
+  border-bottom: 1px solid #b3b3b3;
+  width: 100%;
+  max-width: 420px;
+  padding-bottom: 50px;
 }
 #addPhotoForm input#photoFile {
   display: none;
@@ -396,7 +420,7 @@ h2#titlemodal {
   height: 169px;
   background-color: #ebf1f6;
 
-  margin: 25px auto;
+  margin: 25px 0;
 }
 
 .icon {
@@ -436,7 +460,7 @@ h2#titlemodal {
   display: none;
   max-width: 420px;
   max-height: 169px;
-  top: 27.5%;
+  top: 35%;
   left: 50%;
   transform: translate(-50%, -50%);
 }

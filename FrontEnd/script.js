@@ -91,16 +91,14 @@ fetch("http://localhost:5678/api/works")
       if (target) {
         target.style.display = "block"; // Assurez-vous que la modal est visible
         overlay.style.display = "block"; // Affichez l'overlay
-        target.removeAttribute("aria-hidden");
+        target.removeAttribute("inert");
         target.setAttribute("aria-modal", "true");
         modal = target;
         modal.addEventListener("click", closeModal);
         const stopElement = modal.querySelector(".js-modal-stop");
         if (stopElement) {
           stopElement.addEventListener("click", (e) => {
-            if (!e.target.classList.contains("add-Photo")) {
-              stopPropagation(e);
-            }
+            e.stopPropagation(); // Empêcher la propagation de l'événement de clic
           });
         } else {
           console.error(
@@ -117,6 +115,27 @@ fetch("http://localhost:5678/api/works")
           addPhotoButton.style.display = "block"; // Assurez-vous que le bouton est visible
           addPhotoButton.addEventListener("click", openAddPhotoModal);
         }
+        // Empêcher la propagation des événements de clic à l'intérieur de la modal
+        const modalContent = modal.querySelector(".modal-wrapper");
+        if (modalContent) {
+          modalContent.addEventListener("click", (e) => {
+            e.stopPropagation();
+          });
+        }
+
+        // Empêcher la propagation des événements de clic à l'intérieur des inputs "Titre" et "Catégorie"
+        const titleInput = document.getElementById("title");
+        const categoryInput = document.getElementById("category");
+        if (titleInput) {
+          titleInput.addEventListener("click", (e) => {
+            e.stopPropagation();
+          });
+        }
+        if (categoryInput) {
+          categoryInput.addEventListener("click", (e) => {
+            e.stopPropagation();
+          });
+        }
       } else {
         console.error("La cible de la modal n'a pas été trouvée.");
       }
@@ -128,7 +147,7 @@ fetch("http://localhost:5678/api/works")
       const modals = document.querySelectorAll(".modal");
       modals.forEach((modal) => {
         modal.style.display = "none";
-        modal.setAttribute("aria-hidden", "true");
+        modal.setAttribute("inert", "true");
         modal.removeAttribute("aria-modal");
         modal.removeEventListener("click", closeModal);
         const stopElement = modal.querySelector(".js-modal-stop");
@@ -173,7 +192,7 @@ fetch("http://localhost:5678/api/works")
       if (addPhotoModal) {
         addPhotoModal.style.display = "block"; // Assurez-vous que la modal est visible
         overlay.style.display = "block"; // Affichez l'overlay
-        addPhotoModal.removeAttribute("aria-hidden");
+        addPhotoModal.removeAttribute("inert");
         addPhotoModal.setAttribute("aria-modal", "true");
         modal = addPhotoModal;
         modal.addEventListener("click", closeModal);
@@ -205,13 +224,12 @@ fetch("http://localhost:5678/api/works")
             reader.readAsDataURL(file);
           }
         }); // Ajouter un écouteur d'événements pour gérer l'envoi des données
+        // Ajouter un écouteur d'événements pour gérer l'envoi des données
         const addPhotoForm = document.getElementById("addPhotoForm");
         addPhotoForm.addEventListener("submit", (e) => {
           e.preventDefault();
           const formData = new FormData(addPhotoForm);
           const token = localStorage.getItem("token"); // Récupérer le jeton d'authentification
-          console.log("Token:", token); // Log pour vérifier le jeton
-
           if (!token) {
             console.error("Token non trouvé");
             return;
@@ -244,7 +262,7 @@ fetch("http://localhost:5678/api/works")
               figure.id = `photo-${data.id}`; // Utilisez l'ID retourné par le serveur
 
               const img = document.createElement("img");
-              img.src = data.imageUrl; // Assurez-vous que le chemin est correct
+              img.src = data.imageUrl; // Utilisez l'URL retournée par le serveur
               img.alt = data.title;
 
               const figcaption = document.createElement("figcaption");
@@ -258,9 +276,10 @@ fetch("http://localhost:5678/api/works")
               const galleryModal = document.getElementById("modal1");
               if (galleryModal) {
                 galleryModal.style.display = "none";
-                galleryModal.setAttribute("aria-hidden", "true");
+                galleryModal.setAttribute("inert", "true");
                 galleryModal.removeAttribute("aria-modal");
-              } // Actualiser la page après l'ajout de la photo
+              }
+              // Actualiser la page après l'ajout de la photo
               window.location.reload();
             })
             .catch((error) => {
@@ -454,4 +473,41 @@ fetch("http://localhost:5678/api/works")
       .catch((error) => {
         console.error("Erreur lors de la récupération des images:", error);
       });
+    // Ajouter un écouteur d'événements pour la flèche de retour
+    const backArrow = document.querySelector(".fa-arrow-left");
+    if (backArrow) {
+      backArrow.addEventListener("click", (e) => {
+        e.preventDefault();
+        closeModal(e); // Fermer la modal actuelle
+        const previousModal = document.getElementById("modal1");
+        if (previousModal) {
+          previousModal.style.display = "block"; // Afficher la modal précédente
+          previousModal.removeAttribute("inert");
+          previousModal.setAttribute("aria-modal", "true");
+          modal = previousModal;
+        }
+      });
+    } // Fonction pour récupérer les catégories depuis le backend
+    function fetchCategories() {
+      fetch("http://localhost:5678/api/categories")
+        .then((response) => response.json())
+        .then((categories) => {
+          const categorySelect = document.getElementById("category");
+          categories.forEach((category) => {
+            const option = document.createElement("option");
+            option.value = category.id;
+            option.textContent = category.name;
+            categorySelect.appendChild(option);
+          });
+        })
+        .catch((error) => {
+          console.error(
+            "Erreur lors de la récupération des catégories:",
+            error
+          );
+        });
+    }
+
+    // Appeler la fonction pour récupérer les catégories lorsque la page est chargée
+    fetchCategories();
   });
