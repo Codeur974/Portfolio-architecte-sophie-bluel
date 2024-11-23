@@ -85,7 +85,7 @@
         aria-labelledby="titlemodal"
         style="display: none"
       >
-        <div class="modal-wrapper  ">
+        <div class="modal-wrapper js-modal-stop">
           <button class="js-modal-close">
             <i class="fa-sharp fa-solid fa-xmark"></i>
           </button>
@@ -101,7 +101,6 @@
       <aside
         id="modal2"
         class="modal"
-      insert
         role="dialog"
         aria-labelledby="titlemodal2"
         style="display: none"
@@ -109,8 +108,7 @@
         <div class="modal-wrapper js-modal-stop">
           <button class="close-button js-modal-close">
             <i class="fa-solid fa-arrow-left"></i>
-            <i class="fa-sharp fa-solid fa-xmark "id='backArrow'></i>
-            
+            <i class="fa-sharp fa-solid fa-xmark" id="backArrow"></i>
           </button>
           <h2 id="titlemodal2">Ajout photo</h2>
           <form
@@ -118,53 +116,58 @@
             method="post"
             enctype="multipart/form-data"
             id="addPhotoForm"
+            class="js-modal-stop"
           >
-           
-
-            <div class="input-container">
+            <div class="input-container js-modal-stop">
               <input
-                class="input-file"
-               type="file"
+                class="input-file js-modal-stop"
+                type="file"
                 name="image"
                 id="photoFile"
                 accept=".jpg,.jpeg,.png,.webp"
                 required
                 autocomplete="off"
               />
-               <i class="fa-regular fa-image icon"></i>
-              <label for="photoFile" class="custom-file-upload" >
-               </i><span class="button-photo">+ Ajouter photo</span>
+              <label for="photoFile" class="custom-file-upload js-modal-stop">
+                <span class="button-photo">+ Ajouter photo</span>
               </label>
             </div>
-             
-            </div>
-            <img id="photoPreview" src="" alt="Aperçu de la photo" />
+            <img
+              id="photoPreview"
+              src=""
+              alt="Aperçu de la photo"
+              class="js-modal-stop"
+            />
             <div class="input-group js-modal-stop">
-            <div class="form-group">
-              <label  for="title">Titre</label>
-              <input
-                class="input-title "
-                type="text"
-                name="title"
-                id="title"
-               
-                required
-                autocomplete="off"
-              />
+              <div class="form-group js-modal-stop">
+                <label for="title">Titre</label>
+                <input
+                  class="input-title js-modal-stop"
+                  type="text"
+                  name="title"
+                  id="title"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group js-modal-stop">
+                <label class="label-category" for="category">Catégorie</label>
+                <select
+                  class="input-category js-modal-stop"
+                  name="category"
+                  id="category"
+                  required
+                >
+                  <option value="" disabled selected>
+                    Choisir une catégorie
+                  </option>
+                </select>
+              </div>
             </div>
-            
-            <div class="form-group ">
-              <label class="label-category" for="category">Catégorie</label>
-              <select class="input-category" name="category" id="category" required>
-                <option value="" disabled selected>Choisir une catégorie</option>
-              </select>
-              
-            </div>
-              <button class="valid-Form" type="submit">Valider</button>
-          </div>
-        
+            <button class="valid-Form js-modal-stop" type="submit" disabled>
+              Valider
+            </button>
           </form>
-          
         </div>
       </aside>
     </main>

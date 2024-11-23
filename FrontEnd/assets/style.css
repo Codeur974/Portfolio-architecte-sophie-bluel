@@ -376,12 +376,17 @@ h2#titlemodal2 {
   cursor: pointer;
 }
 .valid-Form {
-  margin-left: 30%;
+  margin-left: 20%;
 }
 #addPhotoForm {
   display: flex;
   flex-direction: column;
-  margin-left: 5%;
+  margin-left: 10%;
+}
+.valid-Form:disabled {
+  background-color: grey; /* Couleur de fond grisée */
+  cursor: not-allowed; /* Curseur non autorisé */
+  opacity: 0.5; /* Opacité réduite */
 }
 .input-category,
 .input-title {
@@ -461,7 +466,7 @@ h2#titlemodal2 {
   max-width: 420px;
   max-height: 169px;
   top: 35%;
-  left: 50%;
+  left: 54%;
   transform: translate(-50%, -50%);
 }
 #photoFile {

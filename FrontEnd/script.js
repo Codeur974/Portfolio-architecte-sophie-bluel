@@ -223,7 +223,7 @@ fetch("http://localhost:5678/api/works")
             };
             reader.readAsDataURL(file);
           }
-        }); // Ajouter un écouteur d'événements pour gérer l'envoi des données
+        });
         // Ajouter un écouteur d'événements pour gérer l'envoi des données
         const addPhotoForm = document.getElementById("addPhotoForm");
         addPhotoForm.addEventListener("submit", (e) => {
@@ -473,6 +473,7 @@ fetch("http://localhost:5678/api/works")
       .catch((error) => {
         console.error("Erreur lors de la récupération des images:", error);
       });
+
     // Ajouter un écouteur d'événements pour la flèche de retour
     const backArrow = document.querySelector(".fa-arrow-left");
     if (backArrow) {
@@ -487,7 +488,8 @@ fetch("http://localhost:5678/api/works")
           modal = previousModal;
         }
       });
-    } // Fonction pour récupérer les catégories depuis le backend
+    }
+    // Fonction pour récupérer les catégories depuis le backend
     function fetchCategories() {
       fetch("http://localhost:5678/api/categories")
         .then((response) => response.json())
@@ -509,5 +511,41 @@ fetch("http://localhost:5678/api/works")
     }
 
     // Appeler la fonction pour récupérer les catégories lorsque la page est chargée
-    fetchCategories();
+    fetchCategories(); // Fonction pour soumettre le formulaire
+
+    const form = document.getElementById("addPhotoForm");
+    const validateButton = document.querySelector(".valid-Form");
+    const photoFileInput = document.getElementById("photoFile");
+    const photoPreview = document.getElementById("photoPreview");
+    const addPhotoText = document.querySelector(".button-photo");
+
+    const checkFormValidity = () => {
+      validateButton.disabled = !form.checkValidity();
+    };
+
+    form.addEventListener("input", checkFormValidity);
+    form.addEventListener("change", checkFormValidity);
+
+    // Initial check
+    checkFormValidity();
+
+    // Ajouter un écouteur d'événements pour afficher l'aperçu de la photo et masquer le texte "Ajouter photo"
+    if (photoFileInput && photoPreview && addPhotoText) {
+      photoFileInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            photoPreview.src = event.target.result;
+            photoPreview.style.display = "block";
+            addPhotoText.style.display = "none"; // Masquer le texte "Ajouter photo"
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    } else {
+      console.error(
+        "L'élément avec l'ID 'photoFile', 'photoPreview' ou 'button-photo' n'a pas été trouvé."
+      );
+    }
   });
