@@ -290,7 +290,8 @@ fetch("http://localhost:5678/api/works")
         console.error("La modal 'Ajouter une photo' n'a pas été trouvée.");
       }
     };
-    const deletePhoto = function (photoId) {
+    // Fonction pour supprimer une photo
+    function deletePhoto(photoId) {
       const token = localStorage.getItem("token"); // Récupérer le jeton d'authentification
       fetch(`http://localhost:5678/api/works/${photoId}`, {
         method: "DELETE",
@@ -313,20 +314,24 @@ fetch("http://localhost:5678/api/works")
             );
           }
           // Supprimer l'élément de la modal
-          const modalPhotoElement = document.getElementById(`photo-${photoId}`);
+          const modalPhotoElement = document.getElementById(
+            `modal-photo-${photoId}`
+          );
           if (modalPhotoElement) {
             modalPhotoElement.remove();
           } else {
             console.error(
-              `L'élément avec l'ID photo-${photoId} n'a pas été trouvé dans la modal.`
+              `L'élément avec l'ID modal-photo-${photoId} n'a pas été trouvé dans la modal.`
             );
           }
+          // Recharger la page après la fermeture de la modal
+
+          window.location.reload();
         })
         .catch((error) => {
           console.error("Erreur lors de la suppression de la photo:", error);
         });
-    };
-
+    }
     const isLoggedIn = localStorage.getItem("isLoggedIn");
 
     if (isLoggedIn === "true") {
@@ -486,6 +491,21 @@ fetch("http://localhost:5678/api/works")
           previousModal.removeAttribute("inert");
           previousModal.setAttribute("aria-modal", "true");
           modal = previousModal;
+          modal.addEventListener("click", closeModal);
+          const stopElements = modal.querySelectorAll(".js-modal-stop");
+          if (stopElements.length > 0) {
+            stopElements.forEach((stopElement) => {
+              stopElement.addEventListener("click", stopPropagation);
+            });
+          }
+          const closeButton = modal.querySelector(".js-modal-close");
+          if (closeButton) {
+            closeButton.style.display = "block"; // Assurez-vous que le bouton est visible
+            closeButton.addEventListener("click", closeModal);
+          }
+          // Assurez-vous que l'overlay reste visible
+          const overlay = document.getElementById("modal-overlay");
+          overlay.style.display = "block";
         }
       });
     }

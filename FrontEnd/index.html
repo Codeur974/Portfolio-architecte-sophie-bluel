@@ -13,6 +13,12 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css"
@@ -129,7 +135,9 @@
                 autocomplete="off"
               />
               <label for="photoFile" class="custom-file-upload js-modal-stop">
+                <i class="fa-regular fa-image icon"></i>
                 <span class="button-photo">+ Ajouter photo</span>
+                <p>jpg,png : 4mo max</p>
               </label>
             </div>
             <img
@@ -158,9 +166,7 @@
                   id="category"
                   required
                 >
-                  <option value="" disabled selected>
-                    Choisir une catégorie
-                  </option>
+                  <option value="" disabled selected></option>
                 </select>
               </div>
             </div>
