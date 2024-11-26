@@ -3,7 +3,7 @@ fetch("http://localhost:5678/api/works")
 
   .then((data) => {
     console.log(data);
-    //creation d'un boutton
+
     // Créer une div pour contenir les boutons
     const buttonContainer = document.createElement("div");
     buttonContainer.classList.add("Elmt");
@@ -11,14 +11,13 @@ fetch("http://localhost:5678/api/works")
     // Ajouter la div au DOM, par exemple, avant la galerie
     const galleryContainer = document.querySelector(".gallery");
     galleryContainer.parentNode.insertBefore(buttonContainer, galleryContainer);
-    const filtreByCategory = (categoryName) => {
-      const filteredData = data.filter(
-        (item) => item.category.name === categoryName
-      );
-      const photoContainer = document.querySelector(".gallery");
-      photoContainer.innerHTML = "";
 
-      filteredData.forEach((item) => {
+    // Fonction pour ajouter des éléments à la galerie
+    function addItemsToGallery(items) {
+      const photoContainer = document.querySelector(".gallery");
+      photoContainer.innerHTML = ""; // Vider le contenu de la galerie
+
+      items.forEach((item) => {
         const figure = document.createElement("figure");
         figure.classList.add("photo");
 
@@ -36,18 +35,33 @@ fetch("http://localhost:5678/api/works")
         figure.appendChild(figcaption);
         figure.appendChild(title);
         photoContainer.appendChild(figure);
-      }); //
-    };
-    const allButton = document.createElement("button");
-    allButton.textContent = "Tous";
-    allButton.classList.add("category-button");
-    allButton.addEventListener("click", showAllButton);
-    buttonContainer.appendChild(allButton);
+      });
+    }
 
+    // Fonction pour filtrer les images par catégorie
+    const filtreByCategory = (categoryName) => {
+      const filteredData = data.filter(
+        (item) => item.category.name === categoryName
+      );
+      addItemsToGallery(filteredData);
+    };
+
+    // Fonction pour afficher toutes les images
+    const showAllButton = () => {
+      addItemsToGallery(data);
+    };
+
+    // Fonction pour afficher les boutons de filtre
     function filterButton() {
       const categories = [...new Set(data.map((item) => item.category.name))];
 
-      categories.forEach((category) => {
+      const allButton = document.createElement("button");
+      allButton.textContent = "Tous";
+      allButton.classList.add("category-button");
+      allButton.addEventListener("click", showAllButton);
+      buttonContainer.appendChild(allButton);
+
+      categories.reverse().forEach((category) => {
         const button = document.createElement("button");
         button.textContent = category;
         button.classList.add("category-button");
@@ -55,29 +69,11 @@ fetch("http://localhost:5678/api/works")
         buttonContainer.appendChild(button);
       });
     }
-    function showAllButton() {
-      const photoContainer = document.querySelector(".gallery");
-      photoContainer.innerHTML = "";
-      data.forEach((item) => {
-        const figure = document.createElement("figure");
-        figure.classList.add("photo");
 
-        const title = document.createElement("h3");
-        title.textContent = item.title;
-        const img = document.createElement("img");
-        img.src = item.imageUrl;
-        img.alt = item.name;
-
-        const figcaption = document.createElement("figcaption");
-        figcaption.textContent = item.name;
-        figure.appendChild(img);
-        figure.appendChild(figcaption);
-        photoContainer.appendChild(figure);
-        figure.appendChild(title);
-      });
-    }
+    // Appeler la fonction pour afficher les boutons de filtre
     filterButton();
 
+    // Afficher toutes les images par défaut
     showAllButton();
 
     let modal = null;
