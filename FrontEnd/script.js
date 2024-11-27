@@ -90,17 +90,14 @@ fetch("http://localhost:5678/api/works")
         target.removeAttribute("inert");
         target.setAttribute("aria-modal", "true");
         modal = target;
-        modal.addEventListener("click", closeModal);
-        const stopElement = modal.querySelector(".js-modal-stop");
-        if (stopElement) {
-          stopElement.addEventListener("click", (e) => {
-            e.stopPropagation(); // Empêcher la propagation de l'événement de clic
+        // Empêcher la fermeture de la modal lorsque vous cliquez à l'intérieur de la modal
+        const modalContent = modal.querySelector(".modal-wrapper");
+        if (modalContent) {
+          modalContent.addEventListener("click", (e) => {
+            e.stopPropagation();
           });
-        } else {
-          console.error(
-            "L'élément avec la classe 'js-modal-stop' n'a pas été trouvé."
-          );
         }
+
         const closeButton = modal.querySelector(".js-modal-close");
         if (closeButton) {
           closeButton.style.display = "block"; // Assurez-vous que le bouton est visible
@@ -111,32 +108,11 @@ fetch("http://localhost:5678/api/works")
           addPhotoButton.style.display = "block"; // Assurez-vous que le bouton est visible
           addPhotoButton.addEventListener("click", openAddPhotoModal);
         }
-        // Empêcher la propagation des événements de clic à l'intérieur de la modal
-        const modalContent = modal.querySelector(".modal-wrapper");
-        if (modalContent) {
-          modalContent.addEventListener("click", (e) => {
-            e.stopPropagation();
-          });
-        }
-
-        // Empêcher la propagation des événements de clic à l'intérieur des inputs "Titre" et "Catégorie"
-        const titleInput = document.getElementById("title");
-        const categoryInput = document.getElementById("category");
-        if (titleInput) {
-          titleInput.addEventListener("click", (e) => {
-            e.stopPropagation();
-          });
-        }
-        if (categoryInput) {
-          categoryInput.addEventListener("click", (e) => {
-            e.stopPropagation();
-          });
-        }
       } else {
         console.error("La cible de la modal n'a pas été trouvée.");
       }
     };
-
+    const overlay = document.getElementById("modal-overlay");
     const closeModal = function (e) {
       if (modal === null) return;
       e.preventDefault();
@@ -146,23 +122,10 @@ fetch("http://localhost:5678/api/works")
         modal.setAttribute("inert", "true");
         modal.removeAttribute("aria-modal");
         modal.removeEventListener("click", closeModal);
-        const stopElement = modal.querySelector(".js-modal-stop");
-        if (stopElement) {
-          stopElement.removeEventListener("click", stopPropagation);
-        }
-        const closeButton = modal.querySelector(".js-modal-close");
-        if (closeButton) {
-          closeButton.removeEventListener("click", closeModal);
-        }
       });
-      const overlay = document.getElementById("modal-overlay");
+
       overlay.style.display = "none"; // Masquez l'overlay
       modal = null;
-    };
-
-    const stopPropagation = function (e) {
-      console.log("stopPropagation called"); // Log pour vérifier que la fonction est appelée
-      e.stopPropagation();
     };
 
     // Fermer la modal avec la touche "Escape"
@@ -170,8 +133,8 @@ fetch("http://localhost:5678/api/works")
       if (e.key === "Escape" || e.key === "Esc") {
         closeModal(e);
       }
-    }); // Fermer la modal lorsque vous cliquez sur l'overlay
-    const overlay = document.getElementById("modal-overlay");
+    });
+    // Fermer la modal lorsque vous cliquez sur l'overlay
     if (overlay) {
       overlay.addEventListener("click", (e) => {
         if (modal) {
@@ -182,7 +145,6 @@ fetch("http://localhost:5678/api/works")
 
     const openAddPhotoModal = function (e) {
       e.preventDefault();
-      e.stopPropagation(); // Empêcher la propagation de l'événement de clic
       const addPhotoModal = document.getElementById("modal2");
       const overlay = document.getElementById("modal-overlay");
       if (addPhotoModal) {
@@ -191,15 +153,14 @@ fetch("http://localhost:5678/api/works")
         addPhotoModal.removeAttribute("inert");
         addPhotoModal.setAttribute("aria-modal", "true");
         modal = addPhotoModal;
-        modal.addEventListener("click", closeModal);
-        const stopElement = modal.querySelector(".js-modal-stop");
-        if (stopElement) {
-          stopElement.addEventListener("click", stopPropagation);
-        } else {
-          console.error(
-            "L'élément avec la classe 'js-modal-stop' n'a pas été trouvé."
-          );
+        // Empêcher la fermeture de la modal lorsque vous cliquez à l'intérieur de la modal
+        const modalContent = modal.querySelector(".modal-wrapper");
+        if (modalContent) {
+          modalContent.addEventListener("click", (e) => {
+            e.stopPropagation();
+          });
         }
+
         const closeButton = modal.querySelector(".js-modal-close");
         if (closeButton) {
           closeButton.style.display = "block"; // Assurez-vous que le bouton est visible
