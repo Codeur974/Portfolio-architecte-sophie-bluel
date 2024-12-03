@@ -268,10 +268,8 @@ a.js-modal {
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 630px;
   height: auto;
-
   top: 70%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -427,9 +425,8 @@ h2#titlemodal2 {
 
 .icon {
   position: absolute;
-
   transform: translateY(-50%);
-  font-size: 76px;
+  font-size: 64px;
   color: #b3b3b3;
   top: 28%;
   left: 50%;
@@ -440,7 +437,7 @@ h2#titlemodal2 {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 25%;
+  margin-top: 23%;
   cursor: pointer;
   font-size: 16px;
   color: #666;
@@ -449,7 +446,6 @@ h2#titlemodal2 {
 }
 .button-photo {
   display: flex;
-
   justify-content: center;
   align-items: center;
   border-radius: 25px;
@@ -469,7 +465,10 @@ h2#titlemodal2 {
   transform: translate(-50%, -50%);
 }
 #photoFile {
-  height: 169px;
+  height: 170px;
+}
+#photo-info {
+  font-size: 10px;
 }
 
 .add-slide {

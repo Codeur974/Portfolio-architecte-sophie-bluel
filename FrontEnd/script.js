@@ -99,6 +99,7 @@ const openModal = function (e) {
   }
 };
 const overlay = document.getElementById("modal-overlay");
+
 const closeModal = function (e) {
   if (modal === null) return;
   e.preventDefault();
@@ -111,6 +112,18 @@ const closeModal = function (e) {
   });
 
   overlay.style.display = "none"; // Masquez l'overlay
+  // Réinitialiser les éléments de la modal
+  if (photoPreview) {
+    photoPreview.src = "";
+    photoPreview.style.display = "none";
+  }
+  if (addPhotoText) {
+    addPhotoText.style.display = "block";
+  }
+  if (photoInfo) {
+    photoInfo.style.display = "block";
+  }
+
   modal = null;
 };
 
