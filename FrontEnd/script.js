@@ -320,6 +320,7 @@ function deletePhoto(photoId) {
         );
       }
       // Recharger les données et réinitialiser l'affichage
+
       return fetchWorks();
     })
     .then((data) => {
@@ -334,6 +335,7 @@ const isLoggedIn = localStorage.getItem("isLoggedIn");
 
 if (isLoggedIn === "true") {
   // Ajouter dynamiquement une barre noire en haut de la page avec le texte "Mode Édition" centré
+
   if (!document.querySelector(".top-bar")) {
     const topBar = document.createElement("div");
     topBar.classList.add("top-bar");
@@ -342,6 +344,7 @@ if (isLoggedIn === "true") {
   }
 
   // Modifier dynamiquement le texte du bouton de connexion en "Logout"
+
   const loginButton = document.getElementById("loginButton");
   if (loginButton) {
     loginButton.innerHTML = '<a href="/index.html">Logout</a>';
@@ -349,6 +352,7 @@ if (isLoggedIn === "true") {
   }
 
   // Vérifiez si le bouton "Modifier" existe déjà
+
   if (!document.querySelector(".js-modal")) {
     // Créer le bouton "Modifier"
     const modifyButton = document.createElement("a");
@@ -358,18 +362,22 @@ if (isLoggedIn === "true") {
       '<i class="fa-solid fa-pen-to-square"></i>Modifier';
 
     // Ajouter le bouton "Modifier" à côté du titre "Mes Projets"
+
     const portfolioSection = document.querySelector("#portfolio");
     const title = portfolioSection.querySelector("h2.buttonImage");
     if (title) {
       // Créer une div englobante pour le titre et le bouton
+
       const titleContainer = document.createElement("div");
       titleContainer.classList.add("title-container");
 
       // Ajouter le titre et le bouton à la div englobante
+
       titleContainer.appendChild(title);
       titleContainer.appendChild(modifyButton);
 
       // Ajouter la div englobante à la section portfolio
+
       portfolioSection.insertBefore(
         titleContainer,
         portfolioSection.firstChild
@@ -377,9 +385,11 @@ if (isLoggedIn === "true") {
     }
 
     // Ajouter un écouteur d'événements pour ouvrir la modal
+
     modifyButton.addEventListener("click", openModal);
   }
   // Ajouter un écouteur d'événements pour ouvrir la modal 1 lorsque la top bar est cliquée
+
   const topBar = document.querySelector(".top-bar");
   if (topBar) {
     topBar.addEventListener("click", (e) => {
@@ -390,6 +400,7 @@ if (isLoggedIn === "true") {
     });
   }
   // Masquer les filtres si l'utilisateur est connecté
+
   const filters = document.querySelector(".Elmt");
   if (filters) {
     filters.style.display = "none";
@@ -401,16 +412,19 @@ const logoutButton = document.getElementById("logoutButton");
 if (logoutButton) {
   logoutButton.addEventListener("click", () => {
     // Supprimer les informations de connexion du localStorage
+
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
     localStorage.removeItem("isLoggedIn");
 
     // Rediriger vers la page d'accueil
+
     window.location.href = "/index.html";
   });
 }
 
 // Ajouter des écouteurs d'événements pour ouvrir la modal
+
 document.querySelectorAll(".js-modal").forEach((a) => {
   a.addEventListener("click", openModal);
 });
@@ -427,11 +441,13 @@ const showImages = function (data) {
   }
 
   // Vider les conteneurs avant d'ajouter les nouveaux éléments
+
   mainGallery.innerHTML = "";
   modalGallery.innerHTML = "";
 
   data.forEach((item) => {
     // Ajouter l'élément à la galerie principale
+
     const figure = document.createElement("figure");
     figure.classList.add("photo");
     figure.id = `photo-${item.id}`; // Ajouter un ID unique pour chaque photo
@@ -443,9 +459,12 @@ const showImages = function (data) {
     const figcaption = document.createElement("figcaption");
     figcaption.textContent = item.name;
 
+    const title = document.createElement("h3");
+    title.textContent = item.title;
+
     figure.appendChild(img);
     figure.appendChild(figcaption);
-
+    figure.appendChild(title);
     mainGallery.appendChild(figure);
 
     // Ajouter l'élément à la modal
@@ -469,16 +488,19 @@ const showImages = function (data) {
 };
 
 // Initialiser les images au chargement de la page
+
 fetchWorks().then((data) => {
   worksData = data;
   showImages(data);
 
   // Extraire les catégories uniques des données de works
+
   const categories = [
     ...new Map(data.map((item) => [item.category.id, item.category])).values(),
   ];
 
   // Ajouter ces catégories à l'élément <select>
+
   const categorySelect = document.getElementById("category");
   categories.forEach((category) => {
     const option = document.createElement("option");
@@ -486,7 +508,9 @@ fetchWorks().then((data) => {
     option.textContent = category.name;
     categorySelect.appendChild(option);
   });
+
   // Fonction pour afficher les boutons de filtre
+
   function filterButton() {
     const categories = [
       ...new Set(worksData.map((item) => item.category.name)),
@@ -507,11 +531,11 @@ fetchWorks().then((data) => {
     });
   }
 
-  // Appeler la fonction pour afficher les boutons de filtre
   filterButton();
 });
 
 // Ajouter un écouteur d'événements pour la flèche de retour
+
 const backArrow = document.querySelector(".fa-arrow-left");
 if (backArrow) {
   backArrow.addEventListener("click", (e) => {
@@ -535,7 +559,7 @@ if (backArrow) {
         closeButton.style.display = "block"; // Assurez-vous que le bouton est visible
         closeButton.addEventListener("click", closeModal);
       }
-      // Assurez-vous que l'overlay reste visible
+
       const overlay = document.getElementById("modal-overlay");
       overlay.style.display = "block";
     }
@@ -559,6 +583,7 @@ form.addEventListener("change", checkFormValidity);
 checkFormValidity();
 
 // Ajouter un écouteur d'événements pour afficher l'aperçu de la photo et masquer le texte "Ajouter photo"
+
 if (photoFileInput && photoPreview && addPhotoText) {
   photoFileInput.addEventListener("change", (e) => {
     const file = e.target.files[0];
@@ -567,8 +592,8 @@ if (photoFileInput && photoPreview && addPhotoText) {
       reader.onload = (event) => {
         photoPreview.src = event.target.result;
         photoPreview.style.display = "block";
-        addPhotoText.style.display = "none"; // Masquer le texte "Ajouter photo"
-        photoInfo.style.display = "none"; // Masquer l'élément <p>
+        addPhotoText.style.display = "none";
+        photoInfo.style.display = "none";
       };
       reader.readAsDataURL(file);
     }

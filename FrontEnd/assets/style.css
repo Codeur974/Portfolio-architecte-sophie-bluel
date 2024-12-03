@@ -157,6 +157,7 @@ header {
   margin: auto;
   background-color: black;
   color: white;
+  cursor: pointer;
 }
 .top-bar i {
   margin-right: 10px;
