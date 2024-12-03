@@ -264,15 +264,17 @@ a.js-modal {
   text-decoration: none;
 }
 .modal {
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: fixed;
+
   width: 630px;
   height: auto;
 
-  top: 20%;
-  left: 33%;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   border-radius: 15px;
   background-color: #fff;
 }
@@ -306,12 +308,10 @@ h2#titlemodal2 {
 .modal-gallery {
   display: flex;
   margin-top: 50px;
-  justify-content: space-between;
   flex-wrap: wrap;
   border-bottom: 1px solid #b3b3b3;
   padding: 0 20px 50px;
-  gap: 30px 5px;
-
+  gap: 25px 10px;
   box-sizing: border-box;
 }
 .close-button,
@@ -449,6 +449,7 @@ h2#titlemodal2 {
 }
 .button-photo {
   display: flex;
+
   justify-content: center;
   align-items: center;
   border-radius: 25px;
