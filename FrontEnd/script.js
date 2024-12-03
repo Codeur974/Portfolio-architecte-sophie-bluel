@@ -214,6 +214,15 @@ fetch("http://localhost:5678/api/works")
               console.log("Photo ajoutée avec succès:", data);
               // Ajouter la nouvelle image au DOM
               const mainGallery = document.querySelector(".main-gallery");
+              const modalGallery = document.querySelector(".modal-gallery");
+              if (!mainGallery || !modalGallery) {
+                console.error(
+                  "La galerie principale ou la modal n'a pas été trouvée."
+                );
+                return;
+              }
+
+              // Ajouter la photo à la galerie principale
               const figure = document.createElement("figure");
               figure.classList.add("photo");
               figure.id = `photo-${data.id}`; // Utilisez l'ID retourné par le serveur
@@ -228,6 +237,34 @@ fetch("http://localhost:5678/api/works")
               figure.appendChild(img);
               figure.appendChild(figcaption);
               mainGallery.appendChild(figure);
+              console.log(
+                "Nouvelle photo ajoutée à la galerie principale:",
+                figure
+              );
+
+              // Ajouter la photo à la modal
+              const modalFigure = document.createElement("figure");
+              modalFigure.classList.add("photo");
+              modalFigure.id = `modal-photo-${data.id}`; // Utilisez l'ID retourné par le serveur
+
+              const modalImg = document.createElement("img");
+              modalImg.src = data.imageUrl; // Utilisez l'URL retournée par le serveur
+              modalImg.alt = data.title;
+              modalFigure.appendChild(modalImg);
+
+              // Ajouter l'icône de suppression
+              const deleteIcon = document.createElement("i");
+              deleteIcon.classList.add("fa", "fa-trash-can", "delete-icon");
+              deleteIcon.addEventListener("click", () => deletePhoto(data.id));
+              modalFigure.appendChild(deleteIcon);
+
+              modalGallery.appendChild(modalFigure);
+              console.log("Nouvelle photo ajoutée à la modal:", modalFigure);
+              // Réinitialiser le formulaire et masquer l'aperçu de la photo
+              addPhotoForm.reset();
+              const photoPreview = document.getElementById("photoPreview");
+              photoPreview.src = "";
+              photoPreview.style.display = "none";
 
               closeModal(e); // Fermer la modal après l'ajout de la photo
               const galleryModal = document.getElementById("modal1");
@@ -236,8 +273,6 @@ fetch("http://localhost:5678/api/works")
                 galleryModal.setAttribute("inert", "true");
                 galleryModal.removeAttribute("aria-modal");
               }
-              // Actualiser la page après l'ajout de la photo
-              window.location.reload();
             })
             .catch((error) => {
               console.error("Erreur lors de l'ajout de la photo:", error);
@@ -247,9 +282,9 @@ fetch("http://localhost:5678/api/works")
         console.error("La modal 'Ajouter une photo' n'a pas été trouvée.");
       }
     };
-    // Fonction pour supprimer une photo
     function deletePhoto(photoId) {
       const token = localStorage.getItem("token"); // Récupérer le jeton d'authentification
+
       fetch(`http://localhost:5678/api/works/${photoId}`, {
         method: "DELETE",
         headers: {
@@ -261,29 +296,49 @@ fetch("http://localhost:5678/api/works")
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           console.log(`Photo avec l'ID ${photoId} supprimée avec succès`);
+
           // Supprimer l'élément de la galerie principale
           const photoElement = document.getElementById(`photo-${photoId}`);
           if (photoElement) {
+            console.log(`Suppression de l'élément avec l'ID photo-${photoId}`);
             photoElement.remove();
           } else {
             console.error(
-              `L'élément avec l'ID photo-${photoId} n'a pas été trouvé.`
+              `L'élément avec l'ID photo-${photoId} est introuvable.`
             );
           }
+
           // Supprimer l'élément de la modal
           const modalPhotoElement = document.getElementById(
             `modal-photo-${photoId}`
           );
           if (modalPhotoElement) {
+            console.log(
+              `Suppression de l'élément avec l'ID modal-photo-${photoId}`
+            );
             modalPhotoElement.remove();
           } else {
             console.error(
-              `L'élément avec l'ID modal-photo-${photoId} n'a pas été trouvé dans la modal.`
+              `L'élément avec l'ID modal-photo-${photoId} est introuvable dans la modal.`
             );
           }
-          // Recharger la page après la fermeture de la modal
 
-          window.location.reload();
+          // Recharger les données et réinitialiser la modal principale
+          console.log("Rechargement des données...");
+          return fetch("http://localhost:5678/api/works");
+        })
+        .then((response) => {
+          console.log(
+            "Réponse reçue du serveur pour la mise à jour des données"
+          );
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Données mises à jour reçues :", data);
+          showImages(data); // Appeler la fonction pour afficher les images mises à jour
+        })
+        .catch((error) => {
+          console.error("Erreur lors de la mise à jour des images:", error);
         })
         .catch((error) => {
           console.error("Erreur lors de la suppression de la photo:", error);
@@ -373,8 +428,6 @@ fetch("http://localhost:5678/api/works")
     document.querySelectorAll(".js-modal").forEach((a) => {
       a.addEventListener("click", openModal);
     });
-
-    // Fonction pour afficher les images dans les deux conteneurs
     const showImages = function (data) {
       const mainGallery = document.querySelector(".main-gallery");
       const modalGallery = document.querySelector(".modal-gallery");
@@ -392,6 +445,7 @@ fetch("http://localhost:5678/api/works")
       modalGallery.innerHTML = "";
 
       data.forEach((item) => {
+        // Ajouter l'élément à la galerie principale
         const figure = document.createElement("figure");
         figure.classList.add("photo");
         figure.id = `photo-${item.id}`; // Ajouter un ID unique pour chaque photo
@@ -403,14 +457,16 @@ fetch("http://localhost:5678/api/works")
         const figcaption = document.createElement("figcaption");
         figcaption.textContent = item.name;
 
+        figure.appendChild(img);
         figure.appendChild(figcaption);
 
         mainGallery.appendChild(figure);
 
-        // Ajouter uniquement l'image au conteneur de la modal
+        // Ajouter l'élément à la modal
         const modalFigure = document.createElement("figure");
         modalFigure.classList.add("photo");
-        modalFigure.id = `photo-${item.id}`; // Ajouter un ID unique pour chaque photo
+        modalFigure.id = `modal-photo-${item.id}`; // Ajouter un ID unique pour chaque photo
+
         const modalImg = document.createElement("img");
         modalImg.src = item.imageUrl;
         modalImg.alt = item.name;

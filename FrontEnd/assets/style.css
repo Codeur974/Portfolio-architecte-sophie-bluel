@@ -303,7 +303,7 @@ h2#titlemodal {
 h2#titlemodal2 {
   margin-left: 5%;
 }
-.main-gallery.modal-gallery {
+.modal-gallery {
   display: flex;
   margin-top: 50px;
   justify-content: space-between;
