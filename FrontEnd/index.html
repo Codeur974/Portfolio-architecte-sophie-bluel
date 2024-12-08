@@ -110,17 +110,19 @@
         style="display: none"
       >
         <div class="modal-wrapper js-modal-stop">
-          <button class="close-button js-modal-close">
-            <i class="fa-solid fa-arrow-left"></i>
-            <i class="fa-sharp fa-solid fa-xmark" id="backArrow"></i>
+          <button class="close-button">
+            <i class="fa-sharp fa-solid fa-xmark js-modal-stop"></i>
           </button>
+          <button id="backArrow">
+            <i class="fa-solid fa-arrow-left js-modal-close"></i>
+          </button>
+
           <h2 id="titlemodal2">Ajout photo</h2>
           <form
             action="http://localhost:5678/api/works"
             method="post"
             enctype="multipart/form-data"
             id="addPhotoForm"
-            class="js-modal-stop"
           >
             <div class="input-container js-modal-stop">
               <input
@@ -132,9 +134,9 @@
                 required
                 autocomplete="off"
               />
-              <label for="photoFile" class="custom-file-upload js-modal-stop">
+              <label for="photoFile" class="custom-file-upload">
                 <i class="fa-regular fa-image icon"></i>
-                <span class="button-photo">+ Ajouter photo</span>
+                <div class="button-photo"><p>+ Ajouter photo</p></div>
 
                 <p id="photo-info">jpg,png : 4mo max</p>
               </label>
@@ -169,9 +171,7 @@
                 </select>
               </div>
             </div>
-            <button class="valid-Form js-modal-stop" type="submit" disabled>
-              Valider
-            </button>
+            <button class="valid-Form js-modal-stop" disabled>Valider'</button>
           </form>
         </div>
       </aside>

@@ -17,6 +17,7 @@ const buttonContainer = document.createElement("div");
 buttonContainer.classList.add("Elmt");
 
 // Ajouter la div au DOM, par exemple, avant la galerie
+
 const galleryContainer = document.querySelector(".gallery");
 galleryContainer.parentNode.insertBefore(buttonContainer, galleryContainer);
 
@@ -58,9 +59,70 @@ const filtreByCategory = (categoryName) => {
 const showAllButton = () => {
   addItemsToGallery(worksData);
 };
-
+function createDeleteIcon(photoId) {
+  const deleteIcon = document.createElement("i");
+  deleteIcon.classList.add("fa", "fa-trash-can", "delete-icon");
+  deleteIcon.addEventListener("click", () => deletePhoto(photoId));
+  return deleteIcon;
+}
 // Afficher toutes les images par défaut
 showAllButton();
+const showImages = function (data) {
+  const mainGallery = document.querySelector(".main-gallery");
+  const modalGallery = document.querySelector(".modal-gallery");
+
+  // Vérifiez que les éléments existent
+  if (!mainGallery || !modalGallery) {
+    console.error(
+      "Les éléments 'mainGallery' ou 'modalGallery' n'ont pas été trouvés."
+    );
+    return;
+  }
+
+  // Vider les conteneurs avant d'ajouter les nouveaux éléments
+
+  mainGallery.innerHTML = "";
+  modalGallery.innerHTML = "";
+
+  data.forEach((item) => {
+    // Ajouter l'élément à la galerie principale
+
+    const figure = document.createElement("figure");
+    figure.classList.add("photo");
+    figure.id = `photo-${item.id}`; // Ajouter un ID unique pour chaque photo
+
+    const img = document.createElement("img");
+    img.src = item.imageUrl;
+    img.alt = item.name;
+
+    const figcaption = document.createElement("figcaption");
+    figcaption.textContent = item.name;
+
+    const title = document.createElement("h3");
+    title.textContent = item.title;
+
+    figure.appendChild(img);
+    figure.appendChild(figcaption);
+    figure.appendChild(title);
+    mainGallery.appendChild(figure);
+
+    // Ajouter l'élément à la modal
+    const modalFigure = document.createElement("figure");
+    modalFigure.classList.add("photo");
+    modalFigure.id = `modal-photo-${item.id}`; // Ajouter un ID unique pour chaque photo
+
+    const modalImg = document.createElement("img");
+    modalImg.src = item.imageUrl;
+    modalImg.alt = item.name;
+    modalFigure.appendChild(modalImg);
+
+    // Ajouter l'icône de suppression
+    const deleteIcon = createDeleteIcon(item.id);
+    modalFigure.appendChild(deleteIcon);
+
+    modalGallery.appendChild(modalFigure);
+  });
+};
 
 let modal = null;
 
@@ -111,17 +173,9 @@ const closeModal = function (e) {
     modal.removeEventListener("click", closeModal);
   });
 
-  overlay.style.display = "none"; // Masquez l'overlay
-  // Réinitialiser les éléments de la modal
-  if (photoPreview) {
-    photoPreview.src = "";
-    photoPreview.style.display = "none";
-  }
-  if (addPhotoText) {
-    addPhotoText.style.display = "block";
-  }
-  if (photoInfo) {
-    photoInfo.style.display = "block";
+  const overlay = document.getElementById("modal-overlay");
+  if (overlay) {
+    overlay.style.display = "none"; // Masquez l'overlay
   }
 
   modal = null;
@@ -141,6 +195,8 @@ if (overlay) {
     }
   });
 }
+
+let isSubmitListenerAdded = false;
 
 const openAddPhotoModal = function (e) {
   e.preventDefault();
@@ -180,107 +236,119 @@ const openAddPhotoModal = function (e) {
         reader.readAsDataURL(file);
       }
     });
+
     // Ajouter un écouteur d'événements pour gérer l'envoi des données
     const addPhotoForm = document.getElementById("addPhotoForm");
-    addPhotoForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const formData = new FormData(addPhotoForm);
-      const token = localStorage.getItem("token"); // Récupérer le jeton d'authentification
-      if (!token) {
-        console.error("Token non trouvé");
-        return;
-      }
-      console.log("FormData entries:", Array.from(formData.entries())); // Log pour vérifier les données envoyées
-      fetch("http://localhost:5678/api/works", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`, // Ajouter le jeton d'authentification aux en-têtes
-        },
-        body: formData,
-      })
-        .then((response) => {
-          console.log("Raw response:", response); // Log pour vérifier la réponse brute
-          if (!response.ok) {
-            return response.text().then((text) => {
-              // Lire la réponse en tant que texte
-              console.error("Erreur du serveur:", text); // Afficher le texte de l'erreur
-              throw new Error(`HTTP error! status: ${response.status}`);
-            });
-          }
-          return response.json();
+    if (!isSubmitListenerAdded) {
+      addPhotoForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const formData = new FormData(addPhotoForm);
+        const token = localStorage.getItem("token"); // Récupérer le jeton d'authentification
+        if (!token) {
+          console.error("Token non trouvé");
+          return;
+        }
+
+        console.log("FormData entries:", Array.from(formData.entries())); // Log pour vérifier les données envoyées
+        fetch("http://localhost:5678/api/works", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`, // Ajouter le jeton d'authentification aux en-têtes
+          },
+          body: formData,
         })
-        .then((data) => {
-          console.log("Photo ajoutée avec succès:", data);
-          // Ajouter la nouvelle image au DOM
-          const mainGallery = document.querySelector(".main-gallery");
-          const modalGallery = document.querySelector(".modal-gallery");
-          if (!mainGallery || !modalGallery) {
-            console.error(
-              "La galerie principale ou la modal n'a pas été trouvée."
-            );
-            return;
-          }
+          .then((response) => {
+            console.log("Raw response:", response); // Log pour vérifier la réponse brute
+            if (!response.ok) {
+              return response.text().then((text) => {
+                // Lire la réponse en tant que texte
+                console.error("Erreur du serveur:", text); // Afficher le texte de l'erreur
+                throw new Error(`HTTP error! status: ${response.status}`);
+              });
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("Photo ajoutée avec succès:", data);
+            addPhotoToGalleries(data); // Appeler la fonction pour ajouter la photo aux galeries
 
-          // Ajouter la photo à la galerie principale
-          const figure = document.createElement("figure");
-          figure.classList.add("photo");
-          figure.id = `photo-${data.id}`; // Utilisez l'ID retourné par le serveur
+            // Réinitialiser le formulaire et masquer l'aperçu de la photo
+            addPhotoForm.reset();
+            const photoPreview = document.getElementById("photoPreview");
+            photoPreview.src = "";
+            photoPreview.style.display = "none";
 
-          const img = document.createElement("img");
-          img.src = data.imageUrl; // Utilisez l'URL retournée par le serveur
-          img.alt = data.title;
+            // Réinitialiser les autres éléments de la modal
+            const addPhotoText = document.querySelector(".button-photo");
+            const photoInfo = document.getElementById("photo-info");
+            if (addPhotoText) {
+              addPhotoText.style.display = "block";
+            }
+            if (photoInfo) {
+              photoInfo.style.display = "block";
+            }
 
-          const figcaption = document.createElement("figcaption");
-          figcaption.textContent = data.title;
-
-          figure.appendChild(img);
-          figure.appendChild(figcaption);
-          mainGallery.appendChild(figure);
-          console.log(
-            "Nouvelle photo ajoutée à la galerie principale:",
-            figure
-          );
-
-          // Ajouter la photo à la modal
-          const modalFigure = document.createElement("figure");
-          modalFigure.classList.add("photo");
-          modalFigure.id = `modal-photo-${data.id}`; // Utilisez l'ID retourné par le serveur
-
-          const modalImg = document.createElement("img");
-          modalImg.src = data.imageUrl; // Utilisez l'URL retournée par le serveur
-          modalImg.alt = data.title;
-          modalFigure.appendChild(modalImg);
-
-          // Ajouter l'icône de suppression
-          const deleteIcon = document.createElement("i");
-          deleteIcon.classList.add("fa", "fa-trash-can", "delete-icon");
-          deleteIcon.addEventListener("click", () => deletePhoto(data.id));
-          modalFigure.appendChild(deleteIcon);
-
-          modalGallery.appendChild(modalFigure);
-          console.log("Nouvelle photo ajoutée à la modal:", modalFigure);
-          // Réinitialiser le formulaire et masquer l'aperçu de la photo
-          addPhotoForm.reset();
-          const photoPreview = document.getElementById("photoPreview");
-          photoPreview.src = "";
-          photoPreview.style.display = "none";
-
-          closeModal(e); // Fermer la modal après l'ajout de la photo
-          const galleryModal = document.getElementById("modal1");
-          if (galleryModal) {
-            galleryModal.style.display = "none";
-            galleryModal.setAttribute("inert", "true");
-            galleryModal.removeAttribute("aria-modal");
-          }
-        })
-        .catch((error) => {
-          console.error("Erreur lors de l'ajout de la photo:", error);
-        });
-    });
-  } else {
-    console.error("La modal 'Ajouter une photo' n'a pas été trouvée.");
+            closeModal(e); // Fermer la modal après l'ajout de la photo
+            const galleryModal = document.getElementById("modal1");
+            if (galleryModal) {
+              galleryModal.style.display = "none";
+              galleryModal.setAttribute("inert", "true");
+              galleryModal.removeAttribute("aria-modal");
+            }
+          })
+          .catch((error) => {
+            console.error("Erreur lors de l'ajout de la photo:", error);
+          });
+      });
+      isSubmitListenerAdded = true;
+    }
   }
 };
+
+function addPhotoToGalleries(data) {
+  const mainGallery = document.querySelector(".main-gallery");
+  const modalGallery = document.querySelector(".modal-gallery");
+
+  if (!mainGallery || !modalGallery) {
+    console.error("La galerie principale ou la modal n'a pas été trouvée.");
+    return;
+  }
+
+  // Ajouter la photo à la galerie principale
+  const figure = document.createElement("figure");
+  figure.classList.add("photo");
+  figure.id = `photo-${data.id}`; // Utilisez l'ID retourné par le serveur
+
+  const img = document.createElement("img");
+  img.src = data.imageUrl; // Utilisez l'URL retournée par le serveur
+  img.alt = data.title;
+
+  const figcaption = document.createElement("figcaption");
+  figcaption.textContent = data.title;
+
+  figure.appendChild(img);
+  figure.appendChild(figcaption);
+  mainGallery.appendChild(figure);
+  console.log("Nouvelle photo ajoutée à la galerie principale:", figure);
+
+  // Ajouter la photo à la modal
+  const modalFigure = document.createElement("figure");
+  modalFigure.classList.add("photo");
+  modalFigure.id = `modal-photo-${data.id}`; // Utilisez l'ID retourné par le serveur
+
+  const modalImg = document.createElement("img");
+  modalImg.src = data.imageUrl; // Utilisez l'URL retournée par le serveur
+  modalImg.alt = data.title;
+  modalFigure.appendChild(modalImg);
+
+  // Ajouter l'icône de suppression
+  const deleteIcon = createDeleteIcon(data.id);
+  modalFigure.appendChild(deleteIcon);
+
+  modalGallery.appendChild(modalFigure);
+  console.log("Nouvelle photo ajoutée à la modal:", modalFigure);
+}
+
 function deletePhoto(photoId) {
   const token = localStorage.getItem("token"); // Récupérer le jeton d'authentification
 
@@ -428,64 +496,6 @@ if (logoutButton) {
 document.querySelectorAll(".js-modal").forEach((a) => {
   a.addEventListener("click", openModal);
 });
-const showImages = function (data) {
-  const mainGallery = document.querySelector(".main-gallery");
-  const modalGallery = document.querySelector(".modal-gallery");
-
-  // Vérifiez que les éléments existent
-  if (!mainGallery || !modalGallery) {
-    console.error(
-      "Les éléments 'mainGallery' ou 'modalGallery' n'ont pas été trouvés."
-    );
-    return;
-  }
-
-  // Vider les conteneurs avant d'ajouter les nouveaux éléments
-
-  mainGallery.innerHTML = "";
-  modalGallery.innerHTML = "";
-
-  data.forEach((item) => {
-    // Ajouter l'élément à la galerie principale
-
-    const figure = document.createElement("figure");
-    figure.classList.add("photo");
-    figure.id = `photo-${item.id}`; // Ajouter un ID unique pour chaque photo
-
-    const img = document.createElement("img");
-    img.src = item.imageUrl;
-    img.alt = item.name;
-
-    const figcaption = document.createElement("figcaption");
-    figcaption.textContent = item.name;
-
-    const title = document.createElement("h3");
-    title.textContent = item.title;
-
-    figure.appendChild(img);
-    figure.appendChild(figcaption);
-    figure.appendChild(title);
-    mainGallery.appendChild(figure);
-
-    // Ajouter l'élément à la modal
-    const modalFigure = document.createElement("figure");
-    modalFigure.classList.add("photo");
-    modalFigure.id = `modal-photo-${item.id}`; // Ajouter un ID unique pour chaque photo
-
-    const modalImg = document.createElement("img");
-    modalImg.src = item.imageUrl;
-    modalImg.alt = item.name;
-    modalFigure.appendChild(modalImg);
-
-    // Ajouter l'icône de suppression
-    const deleteIcon = document.createElement("i");
-    deleteIcon.classList.add("fa", "fa-trash-can", "delete-icon");
-    deleteIcon.addEventListener("click", () => deletePhoto(item.id));
-    modalFigure.appendChild(deleteIcon);
-
-    modalGallery.appendChild(modalFigure);
-  });
-};
 
 // Initialiser les images au chargement de la page
 
@@ -536,24 +546,44 @@ fetchWorks().then((data) => {
 
 // Ajouter un écouteur d'événements pour la flèche de retour
 
-const backArrow = document.querySelector(".fa-arrow-left");
+const backArrow = document.getElementById("backArrow");
 if (backArrow) {
   backArrow.addEventListener("click", (e) => {
     e.preventDefault();
-    closeModal(e); // Fermer la modal actuelle
+    const currentModal = document.getElementById("modal2");
     const previousModal = document.getElementById("modal1");
-    if (previousModal) {
+    if (previousModal && currentModal) {
+      // Réinitialiser le formulaire et masquer l'aperçu de la photo
+      const addPhotoForm = document.getElementById("addPhotoForm");
+      addPhotoForm.reset();
+      const photoPreview = document.getElementById("photoPreview");
+      photoPreview.src = "";
+      photoPreview.style.display = "none";
+
+      // Réinitialiser les autres éléments de la modal
+      const addPhotoText = document.querySelector(".button-photo");
+      const photoInfo = document.getElementById("photo-info");
+      if (addPhotoText) {
+        addPhotoText.style.display = "block";
+      }
+      if (photoInfo) {
+        photoInfo.style.display = "block";
+      }
+
+      currentModal.style.display = "none"; // Masquer la modal actuelle
       previousModal.style.display = "block"; // Afficher la modal précédente
       previousModal.removeAttribute("inert");
       previousModal.setAttribute("aria-modal", "true");
       modal = previousModal;
-      modal.addEventListener("click", closeModal);
-      const stopElements = modal.querySelectorAll(".js-modal-stop");
-      if (stopElements.length > 0) {
-        stopElements.forEach((stopElement) => {
-          stopElement.addEventListener("click", stopPropagation);
+
+      // Empêcher la fermeture de la modal lorsque vous cliquez à l'intérieur de la modal
+      const modalContent = modal.querySelector(".modal-wrapper");
+      if (modalContent) {
+        modalContent.addEventListener("click", (e) => {
+          e.stopPropagation();
         });
       }
+
       const closeButton = modal.querySelector(".js-modal-close");
       if (closeButton) {
         closeButton.style.display = "block"; // Assurez-vous que le bouton est visible
@@ -561,7 +591,17 @@ if (backArrow) {
       }
 
       const overlay = document.getElementById("modal-overlay");
-      overlay.style.display = "block";
+      if (overlay) {
+        overlay.style.display = "block";
+      } else {
+        console.error(
+          "L'élément avec l'ID 'modal-overlay' n'a pas été trouvé."
+        );
+      }
+    } else {
+      console.error(
+        "Les éléments avec les ID 'modal2' ou 'modal1' n'ont pas été trouvés."
+      );
     }
   });
 }

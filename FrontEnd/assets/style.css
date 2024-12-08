@@ -322,10 +322,15 @@ h2#titlemodal2 {
   border: none;
   background-color: #fff;
   font-size: 24px;
+  cursor: pointer;
 }
 .fa-arrow-left {
   position: absolute;
   right: 35rem;
+  cursor: pointer;
+}
+#backArrow {
+  border: none;
 }
 
 .modal-wrapper.js-modal-stop {
@@ -373,6 +378,7 @@ h2#titlemodal2 {
 }
 .valid-Form {
   margin-left: 20%;
+  cursor: pointer;
 }
 #addPhotoForm {
   display: flex;
@@ -455,13 +461,17 @@ h2#titlemodal2 {
   width: 137px;
   height: 36px;
 }
+.button-photo p {
+  padding: 10px 0;
+  margin-left: 5px;
+}
 
 #photoPreview {
   position: absolute;
   display: none;
   max-width: 420px;
   max-height: 169px;
-  top: 31%;
+  top: 33%;
   left: 54%;
   transform: translate(-50%, -50%);
 }
