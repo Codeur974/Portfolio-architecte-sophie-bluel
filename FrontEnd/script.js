@@ -1,72 +1,129 @@
 let worksData = [];
 
-function fetchWorks() {
-  return fetch("http://localhost:5678/api/works")
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      return data;
-    })
-    .catch((error) => {
-      console.error("Erreur lors de la récupération des images:", error);
-    });
+async function fetchWorks() {
+  try {
+    const response = await fetch("http://localhost:5678/api/works");
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des images:", error);
+  }
 }
 
-// Créer une div pour contenir les boutons
+// Créer et insérer une div pour les boutons avant la galerie
 const buttonContainer = document.createElement("div");
 buttonContainer.classList.add("Elmt");
+document.querySelector(".gallery").before(buttonContainer);
 
-// Ajouter la div au DOM, par exemple, avant la galerie
+fetchWorks().then((data) => {
+  worksData = data;
+  showImages(data);
 
-const galleryContainer = document.querySelector(".gallery");
-galleryContainer.parentNode.insertBefore(buttonContainer, galleryContainer);
+  // Extraire les catégories uniques des données de works
 
-// Fonction pour ajouter des éléments à la galerie
-function addItemsToGallery(items) {
-  const photoContainer = document.querySelector(".gallery");
-  photoContainer.innerHTML = ""; // Vider le contenu de la galerie
+  const categories = [
+    ...new Map(data.map((item) => [item.category.id, item.category])).values(),
+  ];
 
-  items.forEach((item) => {
-    const figure = document.createElement("figure");
-    figure.classList.add("photo");
+  // Ajouter ces catégories à l'élément <select>
 
-    const title = document.createElement("h3");
-    title.textContent = item.title;
-
-    const img = document.createElement("img");
-    img.src = item.imageUrl;
-    img.alt = item.name;
-
-    const figcaption = document.createElement("figcaption");
-    figcaption.textContent = item.name;
-
-    figure.appendChild(img);
-    figure.appendChild(figcaption);
-    figure.appendChild(title);
-    photoContainer.appendChild(figure);
+  const categorySelect = document.getElementById("category");
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category.id;
+    option.textContent = category.name;
+    categorySelect.appendChild(option);
   });
-}
 
-// Fonction pour filtrer les images par catégorie
-const filtreByCategory = (categoryName) => {
-  const filteredData = worksData.filter(
-    (item) => item.category.name === categoryName
-  );
-  addItemsToGallery(filteredData);
-};
+  // Fonction pour afficher les boutons de filtre
 
-// Fonction pour afficher toutes les images
-const showAllButton = () => {
-  addItemsToGallery(worksData);
-};
-function createDeleteIcon(photoId) {
+  function filterButton() {
+    const categories = [
+      ...new Set(worksData.map((item) => item.category.name)),
+    ];
+
+    const allButton = document.createElement("button");
+    allButton.textContent = "Tous";
+    allButton.classList.add("category-button");
+    allButton.addEventListener("click", showAllButton);
+    buttonContainer.appendChild(allButton);
+
+    categories.forEach((category) => {
+      const button = document.createElement("button");
+      button.textContent = category;
+      button.classList.add("category-button");
+      button.addEventListener("click", () => filtreByCategory(category));
+      buttonContainer.appendChild(button);
+    });
+  }
+
+  filterButton();
+});
+
+//c
+const createDeleteIcon = (photoId) => {
   const deleteIcon = document.createElement("i");
   deleteIcon.classList.add("fa", "fa-trash-can", "delete-icon");
   deleteIcon.addEventListener("click", () => deletePhoto(photoId));
   return deleteIcon;
+};
+const configureCloseButton = (modal) => {
+  const closeButton = modal.querySelector(".js-modal-close");
+  if (closeButton) {
+    closeButton.style.display = "block"; // Assurez-vous que le bouton est visible
+    closeButton.addEventListener("click", closeModal);
+  }
+};
+// Fonction pour ajouter des éléments à la galerie
+function addItemsToGallery(items, isModal = false) {
+  const gallery = document.querySelector(
+    isModal ? ".modal-gallery" : ".gallery"
+  );
+  gallery.innerHTML = ""; // Vider la galerie
+
+  items.forEach(({ id, title, imageUrl, name }) => {
+    const figure = document.createElement("figure");
+    figure.classList.add("photo");
+    figure.id = isModal ? `modal-photo-${id}` : `photo-${id}`;
+
+    const img = document.createElement("img");
+    img.src = imageUrl;
+    img.alt = name;
+
+    const h3 = document.createElement("h3");
+    h3.textContent = title;
+
+    figure.appendChild(img);
+
+    // Ajouter l'élément <h3> uniquement à la galerie principale
+    if (!isModal) {
+      const h3 = document.createElement("h3");
+      h3.textContent = title;
+      figure.appendChild(h3);
+    }
+
+    if (isModal) {
+      const deleteIcon = createDeleteIcon(id);
+      figure.appendChild(deleteIcon);
+    }
+
+    gallery.appendChild(figure);
+  });
 }
+// Fonction pour filtrer les images par catégorie
+const filtreByCategory = (categoryName) => {
+  addItemsToGallery(
+    worksData.filter((item) => item.category.name === categoryName)
+  );
+};
+
+// Fonction pour afficher toutes les images
+const showAllButton = () => addItemsToGallery(worksData);
+
 // Afficher toutes les images par défaut
 showAllButton();
+
 const showImages = function (data) {
   const mainGallery = document.querySelector(".main-gallery");
   const modalGallery = document.querySelector(".modal-gallery");
@@ -79,49 +136,9 @@ const showImages = function (data) {
     return;
   }
 
-  // Vider les conteneurs avant d'ajouter les nouveaux éléments
-
-  mainGallery.innerHTML = "";
-  modalGallery.innerHTML = "";
-
-  data.forEach((item) => {
-    // Ajouter l'élément à la galerie principale
-
-    const figure = document.createElement("figure");
-    figure.classList.add("photo");
-    figure.id = `photo-${item.id}`; // Ajouter un ID unique pour chaque photo
-
-    const img = document.createElement("img");
-    img.src = item.imageUrl;
-    img.alt = item.name;
-
-    const figcaption = document.createElement("figcaption");
-    figcaption.textContent = item.name;
-
-    const title = document.createElement("h3");
-    title.textContent = item.title;
-
-    figure.appendChild(img);
-    figure.appendChild(figcaption);
-    figure.appendChild(title);
-    mainGallery.appendChild(figure);
-
-    // Ajouter l'élément à la modal
-    const modalFigure = document.createElement("figure");
-    modalFigure.classList.add("photo");
-    modalFigure.id = `modal-photo-${item.id}`; // Ajouter un ID unique pour chaque photo
-
-    const modalImg = document.createElement("img");
-    modalImg.src = item.imageUrl;
-    modalImg.alt = item.name;
-    modalFigure.appendChild(modalImg);
-
-    // Ajouter l'icône de suppression
-    const deleteIcon = createDeleteIcon(item.id);
-    modalFigure.appendChild(deleteIcon);
-
-    modalGallery.appendChild(modalFigure);
-  });
+  // Utiliser addItemsToGallery pour ajouter les éléments à la galerie principale et à la modal
+  addItemsToGallery(data);
+  addItemsToGallery(data, true);
 };
 
 let modal = null;
@@ -146,11 +163,9 @@ const openModal = function (e) {
       });
     }
 
-    const closeButton = modal.querySelector(".js-modal-close");
-    if (closeButton) {
-      closeButton.style.display = "block"; // Assurez-vous que le bouton est visible
-      closeButton.addEventListener("click", closeModal);
-    }
+    // Configure le bouton de fermeture de la modal
+    configureCloseButton(modal);
+
     const addPhotoButton = modal.querySelector(".add-Photo");
     if (addPhotoButton) {
       addPhotoButton.style.display = "block"; // Assurez-vous que le bouton est visible
@@ -216,11 +231,8 @@ const openAddPhotoModal = function (e) {
       });
     }
 
-    const closeButton = modal.querySelector(".js-modal-close");
-    if (closeButton) {
-      closeButton.style.display = "block"; // Assurez-vous que le bouton est visible
-      closeButton.addEventListener("click", closeModal);
-    }
+    // Configure le bouton de fermeture de la modal
+    configureCloseButton(modal);
 
     // Ajouter un écouteur d'événements pour afficher l'aperçu de la photo
     const photoFileInput = document.getElementById("photoFile");
@@ -305,6 +317,7 @@ const openAddPhotoModal = function (e) {
   }
 };
 
+// Fonction pour ajouter des photos aux galeries
 function addPhotoToGalleries(data) {
   const mainGallery = document.querySelector(".main-gallery");
   const modalGallery = document.querySelector(".modal-gallery");
@@ -315,12 +328,24 @@ function addPhotoToGalleries(data) {
   }
 
   // Ajouter la photo à la galerie principale
+  const mainFigure = createPhotoElement(data);
+  mainGallery.appendChild(mainFigure);
+  console.log("Nouvelle photo ajoutée à la galerie principale:", mainFigure);
+
+  // Ajouter la photo à la modal
+  const modalFigure = createPhotoElement(data, true);
+  modalGallery.appendChild(modalFigure);
+  console.log("Nouvelle photo ajoutée à la modal:", modalFigure);
+}
+
+// Fonction pour créer un élément photo
+const createPhotoElement = (data, isModal = false) => {
   const figure = document.createElement("figure");
   figure.classList.add("photo");
-  figure.id = `photo-${data.id}`; // Utilisez l'ID retourné par le serveur
+  figure.id = isModal ? `modal-photo-${data.id}` : `photo-${data.id}`;
 
   const img = document.createElement("img");
-  img.src = data.imageUrl; // Utilisez l'URL retournée par le serveur
+  img.src = data.imageUrl;
   img.alt = data.title;
 
   const figcaption = document.createElement("figcaption");
@@ -328,26 +353,14 @@ function addPhotoToGalleries(data) {
 
   figure.appendChild(img);
   figure.appendChild(figcaption);
-  mainGallery.appendChild(figure);
-  console.log("Nouvelle photo ajoutée à la galerie principale:", figure);
 
-  // Ajouter la photo à la modal
-  const modalFigure = document.createElement("figure");
-  modalFigure.classList.add("photo");
-  modalFigure.id = `modal-photo-${data.id}`; // Utilisez l'ID retourné par le serveur
+  if (isModal) {
+    const deleteIcon = createDeleteIcon(data.id);
+    figure.appendChild(deleteIcon);
+  }
 
-  const modalImg = document.createElement("img");
-  modalImg.src = data.imageUrl; // Utilisez l'URL retournée par le serveur
-  modalImg.alt = data.title;
-  modalFigure.appendChild(modalImg);
-
-  // Ajouter l'icône de suppression
-  const deleteIcon = createDeleteIcon(data.id);
-  modalFigure.appendChild(deleteIcon);
-
-  modalGallery.appendChild(modalFigure);
-  console.log("Nouvelle photo ajoutée à la modal:", modalFigure);
-}
+  return figure;
+};
 
 function deletePhoto(photoId) {
   const token = localStorage.getItem("token"); // Récupérer le jeton d'authentification
@@ -498,51 +511,6 @@ document.querySelectorAll(".js-modal").forEach((a) => {
 });
 
 // Initialiser les images au chargement de la page
-
-fetchWorks().then((data) => {
-  worksData = data;
-  showImages(data);
-
-  // Extraire les catégories uniques des données de works
-
-  const categories = [
-    ...new Map(data.map((item) => [item.category.id, item.category])).values(),
-  ];
-
-  // Ajouter ces catégories à l'élément <select>
-
-  const categorySelect = document.getElementById("category");
-  categories.forEach((category) => {
-    const option = document.createElement("option");
-    option.value = category.id;
-    option.textContent = category.name;
-    categorySelect.appendChild(option);
-  });
-
-  // Fonction pour afficher les boutons de filtre
-
-  function filterButton() {
-    const categories = [
-      ...new Set(worksData.map((item) => item.category.name)),
-    ];
-
-    const allButton = document.createElement("button");
-    allButton.textContent = "Tous";
-    allButton.classList.add("category-button");
-    allButton.addEventListener("click", showAllButton);
-    buttonContainer.appendChild(allButton);
-
-    categories.forEach((category) => {
-      const button = document.createElement("button");
-      button.textContent = category;
-      button.classList.add("category-button");
-      button.addEventListener("click", () => filtreByCategory(category));
-      buttonContainer.appendChild(button);
-    });
-  }
-
-  filterButton();
-});
 
 // Ajouter un écouteur d'événements pour la flèche de retour
 
