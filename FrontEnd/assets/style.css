@@ -159,8 +159,10 @@ header {
   color: white;
   cursor: pointer;
 }
-.top-bar i {
-  margin-right: 10px;
+.edit-icon {
+  margin-right: 5px;
+  cursor: pointer;
+  color: #fff;
 }
 
 section {
