@@ -337,10 +337,6 @@ function addPhotoToGalleries(data) {
   const mainGallery = document.querySelector(".main-gallery");
   const modalGallery = document.querySelector(".modal-gallery");
 
-  if (!mainGallery || !modalGallery) {
-    console.error("La galerie principale ou la modal n'a pas été trouvée.");
-    return;
-  }
   // Ajouter la photo à la galerie principale
   const mainFigure = createPhotoElement(data);
   mainGallery.appendChild(mainFigure);
@@ -361,11 +357,13 @@ const createPhotoElement = (data, isModal = false) => {
   img.src = data.imageUrl;
   img.alt = data.title;
 
-  const figcaption = document.createElement("figcaption");
-  figcaption.textContent = data.title;
-
   figure.appendChild(img);
-  figure.appendChild(figcaption);
+
+  if (!isModal) {
+    const h3 = document.createElement("h3");
+    h3.textContent = data.title;
+    figure.appendChild(h3);
+  }
 
   if (isModal) {
     const deleteIcon = createDeleteIcon(data.id);
