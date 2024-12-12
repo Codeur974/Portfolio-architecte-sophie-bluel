@@ -11,78 +11,6 @@ async function fetchWorks() {
   }
 }
 
-// Créer et insérer une div pour les boutons avant la galerie
-const buttonContainer = document.createElement("div");
-buttonContainer.classList.add("Elmt");
-document.querySelector(".gallery").before(buttonContainer);
-
-fetchWorks().then((data) => {
-  worksData = data;
-  showImages(data);
-
-  // Extraire les catégories uniques des données de works
-
-  const categories = [
-    ...new Map(data.map((item) => [item.category.id, item.category])).values(),
-  ];
-
-  // Ajouter ces catégories à l'élément <select>
-
-  const categorySelect = document.getElementById("category");
-  categories.forEach((category) => {
-    const option = document.createElement("option");
-    option.value = category.id;
-    option.textContent = category.name;
-    categorySelect.appendChild(option);
-  });
-
-  // Fonction pour afficher les boutons de filtre
-
-  function filterButton() {
-    const categories = [
-      ...new Set(worksData.map((item) => item.category.name)),
-    ];
-
-    const allButton = document.createElement("button");
-    allButton.textContent = "Tous";
-    allButton.classList.add("category-button");
-    allButton.addEventListener("click", () => showImages(data));
-    buttonContainer.appendChild(allButton);
-
-    categories.forEach((category) => {
-      const button = document.createElement("button");
-      button.textContent = category;
-      button.classList.add("category-button");
-      button.addEventListener("click", () => filtreByCategory(category));
-      buttonContainer.appendChild(button);
-    });
-  }
-
-  filterButton();
-});
-
-const createDeleteIcon = (photoId) => {
-  const deleteIcon = document.createElement("i");
-  deleteIcon.classList.add("fa", "fa-trash-can", "delete-icon");
-  deleteIcon.addEventListener("click", () => deletePhoto(photoId));
-  return deleteIcon;
-};
-const configureCloseButton = (modal) => {
-  const closeButton = modal.querySelector(".js-modal-close");
-  if (closeButton) {
-    closeButton.style.display = "block"; // Assurez-vous que le bouton est visible
-    closeButton.addEventListener("click", closeModal);
-  }
-};
-const showImages = function (data) {
-  addItemsToGallery(data);
-  addItemsToGallery(data, true);
-};
-// Fonction pour filtrer les images par catégorie
-const filtreByCategory = (categoryName) => {
-  showImages(worksData.filter((item) => item.category.name === categoryName));
-};
-
 // Fonction pour ajouter des éléments à la galerie
 function addItemsToGallery(items, isModal = false) {
   const gallery = document.querySelector(
@@ -119,6 +47,75 @@ function addItemsToGallery(items, isModal = false) {
     gallery.appendChild(figure);
   });
 }
+const showImages = function (data) {
+  addItemsToGallery(data);
+  addItemsToGallery(data, true);
+};
+
+// Créer et insérer une div pour les boutons avant la galerie
+const buttonContainer = document.createElement("div");
+buttonContainer.classList.add("Elmt");
+document.querySelector(".gallery").before(buttonContainer);
+
+function filterButton(data) {
+  const categories = [...new Set(worksData.map((item) => item.category.name))];
+
+  const allButton = document.createElement("button");
+  allButton.textContent = "Tous";
+  allButton.classList.add("category-button");
+  allButton.addEventListener("click", () => showImages(data));
+  buttonContainer.appendChild(allButton);
+
+  // Fonction pour afficher les boutons de filtre
+  categories.forEach((category) => {
+    const button = document.createElement("button");
+    button.textContent = category;
+    button.classList.add("category-button");
+    button.addEventListener("click", () => filtreByCategory(category));
+    buttonContainer.appendChild(button);
+  });
+}
+
+fetchWorks().then((data) => {
+  worksData = data;
+  showImages(data);
+  filterButton(data);
+
+  // Extraire les catégories uniques des données de works
+
+  const categories = [
+    ...new Map(data.map((item) => [item.category.id, item.category])).values(),
+  ];
+
+  // Ajouter ces catégories à l'élément <select>
+
+  const categorySelect = document.getElementById("category");
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category.id;
+    option.textContent = category.name;
+    categorySelect.appendChild(option);
+  });
+});
+
+const createDeleteIcon = (photoId) => {
+  const deleteIcon = document.createElement("i");
+  deleteIcon.classList.add("fa", "fa-trash-can", "delete-icon");
+  deleteIcon.addEventListener("click", () => deletePhoto(photoId));
+  return deleteIcon;
+};
+const configureCloseButton = (modal) => {
+  const closeButton = modal.querySelector(".js-modal-close");
+  if (closeButton) {
+    closeButton.style.display = "block"; // Assurez-vous que le bouton est visible
+    closeButton.addEventListener("click", closeModal);
+  }
+};
+
+// Fonction pour filtrer les images par catégorie
+const filtreByCategory = (categoryName) => {
+  showImages(worksData.filter((item) => item.category.name === categoryName));
+};
 
 let modal = null;
 
