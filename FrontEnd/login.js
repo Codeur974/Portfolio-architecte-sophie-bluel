@@ -7,18 +7,6 @@ document
     const password = document.getElementById("password").value;
     const errorMessage = document.getElementById("error-message");
 
-    // Validation de l'email avec regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      errorMessage.textContent = "Veuillez entrer une adresse e-mail valide.";
-      return;
-    }
-
-    // Validation du mot de passe
-    if (password.trim() === "") {
-      errorMessage.textContent = "Veuillez entrer un mot de passe.";
-      return;
-    }
     // Envoyer les informations de connexion au serveur
     fetch("http://localhost:5678/api/users/login", {
       method: "POST",
@@ -29,10 +17,13 @@ document
     })
       .then((response) => {
         console.log(response);
-        if (!response.ok) {
-          throw new Error("Erreur réseau");
+        if (response.status === 200) {
+          return response.json();
+        } else if (response.status === 401) {
+          throw new Error("E-mail ou mot de passe incorrect");
+        } else if (response.status === 404) {
+          throw new Error("Utilisateur non trouvé");
         }
-        return response.json();
       })
       .then((data) => {
         console.log("Réponse du serveur:", data); // Afficher les données dans la console

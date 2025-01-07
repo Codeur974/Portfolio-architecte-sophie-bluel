@@ -80,23 +80,37 @@ fetchWorks().then((data) => {
   worksData = data;
   showImages(data);
   filterButton(data);
-
-  // Extraire les catégories uniques des données de works
-
-  const categories = [
-    ...new Map(data.map((item) => [item.category.id, item.category])).values(),
-  ];
-
-  // Ajouter ces catégories à l'élément <select>
-
-  const categorySelect = document.getElementById("category");
-  categories.forEach((category) => {
-    const option = document.createElement("option");
-    option.value = category.id;
-    option.textContent = category.name;
-    categorySelect.appendChild(option);
-  });
 });
+async function fetchCathégory() {
+  try {
+    const response = await fetch("http://localhost:5678/api/categories");
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des cathégorie:", error);
+  }
+}
+async function populateCategorySelect() {
+  const categories = await fetchCathégory();
+  const categorySelect = document.getElementById("category");
+
+  if (categorySelect && Array.isArray(categories)) {
+    categories.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category.id;
+      option.textContent = category.name;
+      categorySelect.appendChild(option);
+    });
+  } else {
+    console.error(
+      "L'élément <select> avec l'ID 'category' n'a pas été trouvé ou les catégories ne sont pas un tableau."
+    );
+  }
+}
+
+// Appeler la fonction pour remplir l'élément <select> après le chargement du DOM
+document.addEventListener("DOMContentLoaded", populateCategorySelect);
 
 const createDeleteIcon = (photoId) => {
   const deleteIcon = document.createElement("i");
@@ -310,7 +324,7 @@ const openAddPhotoModal = function (e) {
       const photoPreview = document.getElementById("photoPreview");
       photoPreview.src = "";
       photoPreview.style.display = "none";
-
+      iconInput.style.display = "block";
       // Réinitialiser les autres éléments de la modal
       const addPhotoText = document.querySelector(".button-photo");
 
@@ -389,7 +403,7 @@ if (isLoggedIn === "true") {
 
   const loginButton = document.getElementById("loginButton");
   if (loginButton) {
-    loginButton.innerHTML = '<a href="/index.html">Logout</a>';
+    loginButton.innerHTML = '<a href="/index.html">logout</a>';
     loginButton.id = "logoutButton"; // Changez l'ID pour éviter les conflits
   }
 
