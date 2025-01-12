@@ -4,7 +4,7 @@ async function fetchWorks() {
   try {
     const response = await fetch("http://localhost:5678/api/works");
     const data = await response.json();
-    console.log(data);
+
     return data;
   } catch (error) {
     console.error("Erreur lors de la récupération des images:", error);
@@ -21,16 +21,17 @@ function addItemsToGallery(items, isModal = false) {
   items.forEach(({ id, title, imageUrl, name }) => {
     const figure = document.createElement("figure");
     figure.classList.add("photo");
+
     figure.id = isModal ? `modal-photo-${id}` : `photo-${id}`;
 
     const img = document.createElement("img");
     img.src = imageUrl;
     img.alt = name;
 
+    figure.appendChild(img);
+
     const h3 = document.createElement("h3");
     h3.textContent = title;
-
-    figure.appendChild(img);
 
     // Ajouter l'élément <h3> uniquement à la galerie principale
     if (!isModal) {
@@ -66,7 +67,7 @@ function filterButton(data) {
   allButton.addEventListener("click", () => showImages(data));
   buttonContainer.appendChild(allButton);
 
-  // Fonction pour afficher les boutons de filtre
+  // creation des boutons de filtre
   categories.forEach((category) => {
     const button = document.createElement("button");
     button.textContent = category;
@@ -85,7 +86,7 @@ async function fetchCathégory() {
   try {
     const response = await fetch("http://localhost:5678/api/categories");
     const data = await response.json();
-    console.log(data);
+
     return data;
   } catch (error) {
     console.error("Erreur lors de la récupération des cathégorie:", error);

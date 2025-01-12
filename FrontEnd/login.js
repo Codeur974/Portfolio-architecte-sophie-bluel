@@ -5,7 +5,11 @@ document
 
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
-    const errorMessage = document.getElementById("error-message");
+    const errorMessageElement = document.getElementById("error-message");
+    // Réinitialiser le message d'erreur au début
+
+    errorMessageElement.style.display = "none";
+    errorMessageElement.textContent = "";
 
     // Envoyer les informations de connexion au serveur
     fetch("http://localhost:5678/api/users/login", {
@@ -23,6 +27,8 @@ document
           throw new Error("E-mail ou mot de passe incorrect");
         } else if (response.status === 404) {
           throw new Error("Utilisateur non trouvé");
+        } else {
+          throw new Error("Une erreur est survenue");
         }
       })
       .then((data) => {
@@ -40,14 +46,12 @@ document
 
           window.location.href = "/index.html"; // Rediriger l'utilisateur vers la page d'accueil
         } else {
-          // Afficher un message d'erreur
-          const errorMessage = document.getElementById("error-message");
-          throw new Error("E-mail ou mot de passe incorrect");
+          throw new Error("Données de connexion invalides.");
         }
       })
       .catch((error) => {
-        console.log("E-mail ou mot de passe incorrect");
-        const errorMessage = document.getElementById("error-message");
-        errorMessage.textContent = "E-mail ou mot de passe incorrect";
+        // Afficher l'erreur dans le conteneur d'erreur
+        errorMessageElement.style.display = "block";
+        errorMessageElement.textContent = error.message;
       });
   });
