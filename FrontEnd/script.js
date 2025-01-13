@@ -52,7 +52,10 @@ const showImages = function (data) {
   addItemsToGallery(data);
   addItemsToGallery(data, true);
 };
-
+// Fonction pour filtrer les images par catégorie
+const filtreByCategory = (categoryName) => {
+  showImages(worksData.filter((item) => item.category.name === categoryName));
+};
 // Créer et insérer une div pour les boutons avant la galerie
 const buttonContainer = document.createElement("div");
 buttonContainer.classList.add("Elmt");
@@ -125,11 +128,6 @@ const configureCloseButton = (modal) => {
     closeButton.style.display = "block"; // Assurez-vous que le bouton est visible
     closeButton.addEventListener("click", closeModal);
   }
-};
-
-// Fonction pour filtrer les images par catégorie
-const filtreByCategory = (categoryName) => {
-  showImages(worksData.filter((item) => item.category.name === categoryName));
 };
 
 let modal = null;

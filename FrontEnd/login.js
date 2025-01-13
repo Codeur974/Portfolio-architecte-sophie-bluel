@@ -1,6 +1,6 @@
 document
   .getElementById("loginForm")
-  .addEventListener("submit", function (event) {
+  .addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const email = document.getElementById("email").value;
@@ -11,27 +11,20 @@ document
     errorMessageElement.style.display = "none";
     errorMessageElement.textContent = "";
 
-    // Envoyer les informations de connexion au serveur
-    fetch("http://localhost:5678/api/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    })
-      .then((response) => {
-        console.log(response);
-        if (response.status === 200) {
-          return response.json();
-        } else if (response.status === 401) {
-          throw new Error("E-mail ou mot de passe incorrect");
-        } else if (response.status === 404) {
-          throw new Error("Utilisateur non trouvé");
-        } else {
-          throw new Error("Une erreur est survenue");
-        }
-      })
-      .then((data) => {
+    try {
+      // Envoyer les informations de connexion au serveur
+      const response = await fetch("http://localhost:5678/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      console.log(response);
+
+      if (response.status === 200) {
+        const data = await response.json();
         console.log("Réponse du serveur:", data); // Afficher les données dans la console
 
         // Vérifier si l'API retourne des données
@@ -48,10 +41,16 @@ document
         } else {
           throw new Error("Données de connexion invalides.");
         }
-      })
-      .catch((error) => {
-        // Afficher l'erreur dans le conteneur d'erreur
-        errorMessageElement.style.display = "block";
-        errorMessageElement.textContent = error.message;
-      });
+      } else if (response.status === 401) {
+        throw new Error("E-mail ou mot de passe incorrect");
+      } else if (response.status === 404) {
+        throw new Error("Utilisateur non trouvé");
+      } else {
+        throw new Error("Une erreur est survenue");
+      }
+    } catch (error) {
+      // Afficher l'erreur dans le conteneur d'erreur
+      errorMessageElement.style.display = "block";
+      errorMessageElement.textContent = error.message;
+    }
   });
