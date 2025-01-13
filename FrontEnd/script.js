@@ -262,21 +262,6 @@ const openAddPhotoModal = function (e) {
     // Configure le bouton de fermeture de la modal
     configureCloseButton(modal);
 
-    // Ajouter un écouteur d'événements pour afficher l'aperçu de la photo
-    const photoFileInput = document.getElementById("photoFile");
-    const photoPreview = document.getElementById("photoPreview");
-    photoFileInput.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          photoPreview.src = event.target.result;
-          photoPreview.style.display = "block";
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
     const handleFormSubmit = async (e) => {
       e.preventDefault();
       const formData = new FormData(addPhotoForm);
