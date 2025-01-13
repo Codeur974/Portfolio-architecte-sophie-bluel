@@ -42,7 +42,7 @@ document
           throw new Error("Données de connexion invalides.");
         }
       } else if (response.status === 401) {
-        throw new Error("E-mail ou mot de passe incorrect");
+        throw new Error(" mot de passe incorrect");
       } else if (response.status === 404) {
         throw new Error("Utilisateur non trouvé");
       } else {
