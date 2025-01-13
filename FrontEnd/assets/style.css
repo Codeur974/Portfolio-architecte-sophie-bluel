@@ -512,7 +512,7 @@ h2#titlemodal2 {
   font-weight: bold;
   cursor: pointer;
 }
-.category-button:hover {
+.category-button:focus {
   background-color: #1d6154;
   color: white;
 }
